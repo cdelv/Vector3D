@@ -41,9 +41,6 @@ class vector3D{
   //Angle between two vectors
   friend double angle(vector3D v1, vector3D v2);
 };
-//---------------------------------------
-//  vector class functions
-//--------------------------------------
 //Initialize the vector
 void vector3D::load(double x0, double y0, double z0){
   X=x0; Y=y0; Z=z0;
