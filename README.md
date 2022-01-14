@@ -25,13 +25,14 @@ The usual operations between vectors such as `=`, `+`, `-`, `+=`, `-=` are suppo
 ```
 vector3D v; v.load(1,2,3);
 double a=2.0;
-std::cout << a*v << " " << v*a <<"\n"; 
+vector3D v1= a*v; 
+vector3D v2 = v*a; 
 v*=a;                                  
-std::cout << v << "\n";                 //all these operations will output (2,4,6)
+v.show(); v1.show(); v2.show();  //all these operations will output (2,4,6)
 
-std::cout << v/a << "\n"; 
+vector3D v1= v/a; 
 v/=a;                                  
-std::cout << v << "\n";                //all these operations will output (1,2,3)
+v.show(); v1.show();             //all these operations will output (1,2,3)
 ```
 
 `a/v` is not defined. Dot products and cross products can be performed with
