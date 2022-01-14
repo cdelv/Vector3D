@@ -20,3 +20,27 @@ v.x(); v.y(); v.z();
 Or print the whole vector to the screen with `v.show()`. You can also calculate the norm of the vector with `v.norm()` or the square norm with `v.norm2()`. You also can calculate the angle between two vectors (in radians) with the function `angle(v1,v2)`.
 
 # Operators
+
+The usual operations between vectors such as `=`, `+`, `-`, `+=`, `-=` are supported. Also, the multiplication and division (inverse multiplication) by escalar exist.
+```
+vector3D v; v.load(1,2,3);
+double a=2.0;
+std::cout << a*v << " " << v*a <<"\n"; 
+v*=a;                                  
+std::cout << v << "\n";                 //all these operations will output (2,4,6)
+
+std::cout << v/a << "\n"; 
+v/=a;                                  
+std::cout << v << "\n";                //all these operations will output (1,2,3)
+```
+
+`a/v` is not defined. Dot products and cross products can be performed with
+```
+double Dot = v1*v2;
+vector3D cross = v1^v2;
+```
+If you plan to include a cross product on compound operations, you have to be careful because the `^` operators have lower precedence than the others, then, you have to put your cross product inside a parenthesis.
+```
+  double result = v1*(v2^v3);
+```
+
