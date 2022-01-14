@@ -19,18 +19,18 @@ class vector3D{
   //Show the vector
   void show(void);
   //Vectorial operators
-  vector3D operator= (vector3D v2);
+  void operator= (vector3D v2);
   vector3D operator+ (vector3D v2);
-  vector3D operator+=(vector3D v2);
+  void operator+=(vector3D v2);
   vector3D operator- (vector3D v2);
-  vector3D operator-=(vector3D v2);
+  void operator-=(vector3D v2);
   //Scalar multiplication
   vector3D operator* (double a);
-  vector3D operator*=(double a);
+  void operator*=(double a);
   friend vector3D operator* (double a,vector3D v1);	
   //Scalar division
   vector3D operator/ (double a);
-  vector3D operator/=(double a);
+  void operator/=(double a);
   //Cross product
   vector3D operator^ (vector3D v2);
   //Dot product
@@ -53,42 +53,46 @@ void vector3D::show(void){
   std::cout << "(" <<X<< "," <<Y<< "," <<Z<< ")\n";
 }
 //Vectorial operators
-vector3D vector3D::operator=(vector3D v2){
+void vector3D::operator=(vector3D v2){
   X=v2.X;
   Y=v2.Y;
   Z=v2.Z;
-  return *this;
 }
-vector3D vector3D::operator+(vector3D v2){ //check performance of this operation
+vector3D vector3D::operator+(vector3D v2){
   vector3D total;
   total.X = X + v2.X;
   total.Y = Y + v2.Y;
   total.Z = Z + v2.Z;
   return total;
 }
-vector3D vector3D::operator+=(vector3D v2){ //check performance of this operation
-  return *this+v2;
+void vector3D::operator+=(vector3D v2){
+  X = X + v2.X;
+  Y = Y + v2.Y;
+  Z = Z + v2.Z;
 }
-vector3D vector3D::operator*(double a){ //check performance of this operation (return *this)
+vector3D vector3D::operator*(double a){
   vector3D total;
   total.X = X*a;
   total.Y = Y*a;
   total.Z = Z*a;
   return total;
 } 
-vector3D vector3D::operator*=(double a){ //check performance of this operation (non recursive)
-  return (*this)*a;
+void vector3D::operator*=(double a){
+  X = X*a;
+  Y = Y*a;
+  Z = Z*a;
 }
-vector3D vector3D::operator/(double a){ //check performance of this operation
-  double inver = 1.0/a;
+vector3D vector3D::operator/(double a){
   vector3D total;
-  total.X = inver*X;
-  total.Y = inver*Y;
-  total.Z = inver*Z;
+  total.X = X/a;
+  total.Y = Y/a;
+  total.Z = Z/a;
   return total;
 }
-vector3D vector3D::operator/=(double a){ //check performance of this operation (non recursive)
-  return (*this)/a;
+void vector3D::operator/=(double a){ 
+  X = X/a;
+  Y = Y/a;
+  Z = Z/a;
 }
 vector3D vector3D::operator-(vector3D v2){
   vector3D total;
@@ -97,8 +101,10 @@ vector3D vector3D::operator-(vector3D v2){
   total.Z = Z - v2.Z;
   return total;
 }
-vector3D vector3D::operator-=(vector3D v2){
-  return *this-v2;
+void vector3D::operator-=(vector3D v2){
+  X = X - v2.X;
+  Y = Y - v2.Y;
+  Z = Z - v2.Z;
 }
 double vector3D::operator*(vector3D v2){
   return X*v2.X+Y*v2.Y+Z*v2.Z;
@@ -111,7 +117,10 @@ vector3D vector3D::operator^(vector3D v2){
   return total;
 }
 vector3D operator*(double a,vector3D v1){
-  return v1*a;
+  v1.X = v1.X*a;
+  v1.Y = v1.Y*a;
+  v1.Z = v1.Z*a;
+  return v1;
 }
 double vector3D::norm2(vector3D v){ 
   return v.X*v.X+v.Y*v.Y+v.Z*v.Z;
