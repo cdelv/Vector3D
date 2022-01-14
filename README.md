@@ -21,7 +21,7 @@ Or, print the whole vector to the screen with `v.show()`. You can also calculate
 
 # Operators
 
-The usual operations between vectors such as `=`, `+`, `-`, `+=`, `-=` are supported. Also, the multiplication and division (inverse multiplication) by escalar exist.
+The usual operations between vectors such as `=`, `+`, `-`, `+=`, `-=` are supported. Also, the multiplication and division by escalar exist.
 ```
 vector3D v; v.load(1,2,3);
 double a=2.0;
