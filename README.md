@@ -1,5 +1,4 @@
-# Vector3D (beta)
-(Some small performace tweeks are on the way)
+# Vector3D
 
 A C++ fast and lightweight 3D vector library.
 
