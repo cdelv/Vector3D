@@ -36,8 +36,8 @@ class vector3D{
   //Dot product
   double operator* (vector3D v2);
   //Norm operations
-  double norm2(vector3D v1);    
-  double norm(vector3D v1);
+  double norm2(void);    
+  double norm(void);
   //Angle between two vectors
   friend double angle(vector3D v1, vector3D v2);
 };
@@ -122,11 +122,11 @@ vector3D operator*(double a,vector3D v1){
   v1.Z = v1.Z*a;
   return v1;
 }
-double vector3D::norm2(vector3D v){ 
-  return v.X*v.X+v.Y*v.Y+v.Z*v.Z;
+double vector3D::norm2(void){ 
+  return X*X+Y*Y+Z*Z;
 }
-double vector3D::norm(vector3D v){
-  return std::sqrt(v.X*v.X+v.Y*v.Y+v.Z*v.Z);
+double vector3D::norm(void){
+  return std::sqrt(X*X+Y*Y+Z*Z);
 }
 double angle(vector3D v1, vector3D v2)
 {
