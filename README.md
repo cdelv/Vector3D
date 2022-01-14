@@ -24,14 +24,14 @@ The usual operations between vectors such as `=`, `+`, `-`, `+=`, `-=` are suppo
 ```
 vector3D v; v.load(1,2,3);
 double a=2.0;
-vector3D v1= a*v; 
-vector3D v2 = v*a; 
+vector3D v1; v1= a*v; 
+vector3D v2; v2 = v*a; 
 v*=a;                                  
 v.show(); v1.show(); v2.show();  //all these operations will output (2,4,6)
-
-vector3D v1= v/a; 
+  
+vector3D v3; v3 = v/a; 
 v/=a;                                  
-v.show(); v1.show();             //all these operations will output (1,2,3)
+v.show(); v3.show();             //all these operations will output (1,2,3)
 ```
 
 `a/v` is not defined. Dot products and cross products can be performed with
