@@ -1,9 +1,7 @@
 # Vector3D (beta)
 (Some small performace tweeks are on the way)
 
-A C++ fast and lightweight 3D vector library.
-
-This library is made for scientific usage, then, all vector components are of type double. On the future, for applications that don't need high precision, there will be a library called `fastvector.h` that uses floats instead. usage will be the same, althoug the data type will be `fvector3D`. 
+A C++ fast and lightweight 3D vector library. All vector components are of type double. 
 
 # Usage
 On your C++ code include the file.
