@@ -1,4 +1,7 @@
-#pragma once
+//writen by Carlos Andres del Valle Urberuaga.
+//A C++ fast and lightweight 3D vector library.
+//Inspired by the version of Luis Eduardo Olmos.
+
 #include <iostream>
 #include <cmath>
 
@@ -7,48 +10,53 @@ class vector3D{
   double X, Y, Z;
 
  public:
-  //inicializar el vector
-  void cargue(double x0, double y0, double z0);
-  //Obtener componentes
+  //Initialize the vector
+  void load(double x0, double y0, double z0);
+  //Get the components
   double x(void){return X;};
   double y(void){return Y;};
   double z(void){return Z;};
-  //mostrar el vector
+  //Show the vector
   void show(void);
-  // Operaciones vectoriales
+  //Vectorial operators
   vector3D operator= (vector3D v2);
   vector3D operator+ (vector3D v2);
   vector3D operator+=(vector3D v2);
   vector3D operator- (vector3D v2);
   vector3D operator-=(vector3D v2);
-  // Producto por escalar
+  //Scalar multiplication
   vector3D operator* (double a);
   vector3D operator*=(double a);
   friend vector3D operator* (double a,vector3D v1);	
-  // Division por escalar
+  //Scalar division
   vector3D operator/ (double a);
   vector3D operator/=(double a);
-  // Producto cruz
+  //Cross product
   vector3D operator^ (vector3D v2);
-  // Producto punto
+  //Dot product
   double operator* (vector3D v2);
-  // Norma 
-  friend double norma2(vector3D v1);    
-  friend double norma(vector3D v1); 
+  //Norm operations
+  double norm2(vector3D v1);    
+  double norm(vector3D v1);
+  //Angle between two vectors
+  double angle(vector3D v1, vector3D v2);
 };
-void vector3D::cargue(double x0, double y0, double z0){
+//Initialize the vector
+void vector3D::load(double x0, double y0, double z0){
   X=x0; Y=y0; Z=z0;
 }
+//Show the vector
 void vector3D::show(void){
   std::cout << "(" <<X<< "," <<Y<< "," <<Z<< ")\n";
 }
+//Vectorial operators
 vector3D vector3D::operator=(vector3D v2){
   X=v2.X;
   Y=v2.Y;
   Z=v2.Z;
   return *this;
 }
-vector3D vector3D::operator+(vector3D v2){
+vector3D vector3D::operator+(vector3D v2){ //check performance of this function
   vector3D total;
   total.X = X + v2.X;
   total.Y = Y + v2.Y;
@@ -102,9 +110,14 @@ vector3D vector3D::operator^(vector3D v2){
 vector3D operator*(double a,vector3D v1){
   return v1*a;
 }
-double norma2(vector3D v){ 
+double vector3D::norm2(vector3D v){ 
   return v.X*v.X+v.Y*v.Y+v.Z*v.Z;
 }
-double norma(vector3D v){
+double vector3D::norm(vector3D v){
   return std::sqrt(v.X*v.X+v.Y*v.Y+v.Z*v.Z);
+}
+double angle(vector3D v1, vector3D v2)
+{
+
+  
 }
