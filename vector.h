@@ -42,7 +42,7 @@ class vector3D{
   friend double angle(vector3D v1, vector3D v2);
 };
 //---------------------------------------
-//  vector class functions
+//  vector class functions 
 //--------------------------------------
 //Initialize the vector
 void vector3D::load(double x0, double y0, double z0){
