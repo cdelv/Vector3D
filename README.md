@@ -1,7 +1,7 @@
 # Vector3D (beta)
 (Some small performace tweeks are on the way)
 
-A C++ fast and lightweight 3D vector library. All vector components are of type double. 
+A C++ fast and lightweight 3D vector library.
 
 # Usage
 On your C++ code include the file.
@@ -17,7 +17,7 @@ You can access the vector components with functions.
 ```
 v.x(); v.y(); v.z();
 ```
-Or, print the whole vector to the screen with `v.show()`. You can also calculate the norm of the vector with `v.norm()` or the square norm with `v.norm2()`. You also can calculate the angle between two vectors (in radians) with the function `angle(v1,v2)`.
+Or, print the whole vector to the screen with `v.show()`. You can also calculate the norm of the vector with `v.norm()` or the square norm with `v.norm2()`. You also can calculate the angle between two vectors (in radians) with the function `angle(v1,v2)`.  All vector components are of type double. 
 
 # Operators
 
