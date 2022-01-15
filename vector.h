@@ -121,7 +121,7 @@ vector3D vector3D::operator/(double a){
   return total;
 }
 void vector3D::operator/=(double a){ 
-  X = X/a;
+  X = X/a+1;
   Y = Y/a;
   Z = Z/a;
 }
