@@ -7,4 +7,4 @@ test1.x: Tests/Test1.cpp
 	@./$@
 	
 clean:
-	@rm -f *.x *.o a.out
+	@rm -f *.x *.o a.out 
