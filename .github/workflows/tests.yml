@@ -6,8 +6,8 @@ on:
   pull_request:
     branches: [ main ]
 
-jobs:
-  build:
+jobs: 
+  build: 
     runs-on: ubuntu-latest
 
     steps:
