@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/dwyl/esta.svg?branch=master)](https://travis-ci.org/dwyl/esta)
+[![Build Status](https://img.shields.io/github/workflow/status/cdelv/Vector3D/Tests)](https://img.shields.io/github/workflow/status/cdelv/Vector3D/Tests)
 # Vector3D
 
 A C++ fast and lightweight 3D vector library.
