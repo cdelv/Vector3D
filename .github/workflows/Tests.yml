@@ -16,4 +16,4 @@ jobs:
     - name: install google tests
       run: sudo apt install -y libgtest-dev
     - name: run tests
-      run: make git_test
+      run: make test
