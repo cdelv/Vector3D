@@ -3,7 +3,7 @@ all: test
 test: test1.x
 
 test1.x: Tests/Test1.cpp
-	@g++ $^ -o $@ -lgtest
+	@g++ $^ -o $@ -lgtest -pthread
 	@./$@
 	@rm $@
 	
