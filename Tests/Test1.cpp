@@ -339,6 +339,7 @@ TEST(cross, cross_operator){
   EXPECT_EQ(std::acos(37/std::sqrt(5763)), angle(v1,v2));
 }
 
+
 int main(int argc, char **argv)
 {
   testing::InitGoogleTest(&argc, argv);
