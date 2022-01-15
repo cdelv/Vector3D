@@ -43,4 +43,11 @@ If you plan to include a cross product on compound operations, you have to be ca
 ```
   double result = v1*(v2^v3);
 ```
+# Tests and benchmarcks
+
+On the `Test` directory you can find tests done to ensure the library works fine. To run them, just type `make` or `make test`. To run the tests you need the google test library, make shure you have it installed and that it is on your `$PATH`. To install on Ubuntu.
+```
+sudo apt install libgtest-dev
+```
+On the future, there will be a benchmarks directory where you would be able to inspect the performace of the library.
 
