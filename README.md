@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/dwyl/esta.svg?branch=master)](https://travis-ci.org/dwyl/esta)
 # Vector3D
 
 A C++ fast and lightweight 3D vector library.
