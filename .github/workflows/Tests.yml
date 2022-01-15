@@ -8,8 +8,15 @@ on:
 
 jobs:
   Test:
-
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        
+        include:
+         - os: ubuntu-latest
+           compiler: gcc
+           version: 11.2
 
     steps:
     - uses: actions/checkout@v2
