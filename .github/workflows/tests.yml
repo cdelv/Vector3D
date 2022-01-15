@@ -1,0 +1,17 @@
+name: Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+      runs-on: ubuntu-latest
+      steps:
+      - uses: actions/checkout@v2
+      - name: install google test
+      run: sudo apt install -y libgtest-dev
+      - name: make test
+      run: make test
