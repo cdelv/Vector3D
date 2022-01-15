@@ -50,5 +50,5 @@ On the `Test` directory you can find tests done to ensure the library works fine
 ```
 sudo apt install libgtest-dev
 ```
-On the future, there will be a benchmarks directory where you would be able to inspect the performace of the library.
+All tests are runned automatically via GitHub action on every push. On the future, there will be a benchmarks directory where you would be able to inspect the performace of the library.
 
