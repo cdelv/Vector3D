@@ -13,7 +13,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: install google tests manualy
-      run: cdelv/googletest-action@master
+    - name: install google tests 
+      run: sudo apt-get update && sudo apt-get install -y -f libgtest-dev
     - name: run tests
       run: make test
