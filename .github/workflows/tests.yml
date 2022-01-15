@@ -1,37 +1,22 @@
 name: Tests
 
 on:
+name: C/C++ CI
+
+on:
   push:
-    branches: [ main ]
+      branches: [ main ]
   pull_request:
-    branches: [ main ]
+      branches: [ main ]
 
 jobs:
-    build:
-    # The type of runner that the job will run on
-    name: ${{ matrix.config.name }}
-    runs-on: ${{ matrix.config.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        config:
-        - {
-            name: "Ubuntu Latest GCC",
-            os: ubuntu-latest,
-            build_type: "Debug",
-            cc: "gcc",
-            cxx: "g++",
-          }
-      
-    steps:
+  build-and-test:
+      runs-on: ubuntu-latest
+      steps:
       - uses: actions/checkout@v2
-
-      
       - name: install google test
-      if: startsWith(matrix.config.name, 'Ubuntu Latest GCC')
       run: sudo apt install -y libgtest-dev
-      
-      - name: make test
+      - name: make git_test
       run: make test
       
       
