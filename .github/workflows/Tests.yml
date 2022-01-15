@@ -2,18 +2,25 @@ name: Tests
 
 on:
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+    paths-ignore:
+    - 'Tests/**'
+    - 'README.md'
 
 jobs:
-  build:
-
-    runs-on: ubuntu-latest
+  Test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        
+        include:
+         - os: ubuntu-latest
+           compiler: gcc
+           version: 11.2
 
     steps:
     - uses: actions/checkout@v2
-    - name: install google tests manualy
-      run: sudo apt-get install libgtest-dev && cd /usr/src/gtest && sudo cmake CMakeLists.txt && sudo make && sudo cp *.a /usr/lib && sudo ln -s /usr/lib/libgtest.a /usr/local/lib/libgtest.a && sudo ln -s /usr/lib/libgtest_main.a /usr/local/lib/libgtest_main.a
+    - name: install google tests 
+      run: sudo apt-get install -y libgtest-dev
     - name: run tests
       run: make test
