@@ -21,6 +21,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: install google tests 
-      run: sudo apt-get install libgtest-dev && cd /usr/src/gtest && sudo cmake CMakeLists.txt && sudo make && export PATH=$PATH:$(pwd) 
+      run: sudo apt-get install -y libgtest-dev
     - name: run tests
       run: make test
