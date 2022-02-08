@@ -6,7 +6,7 @@ A C++ fast and lightweight 3D vector library.
 # Usage
 On your C++ code include the file.
 ```
-#include <vector.h>
+#include "vector.h"
 ```
 Then, declare your vector and initialize it.
 ```
