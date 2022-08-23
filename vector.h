@@ -1,20 +1,14 @@
-//A C++ fast and lightweight 3D vector library.
-//Optimized to be as fast as possible maintaining great usability.
-/* 
+/*
+A C++ fast and lightweight 3D vector library.
+Optimized to be as fast as possible maintaining great usability.
+ 
  * This file is part of the Vector3D distribution (https://github.com/cdelv/Vector3D).
  * Copyright (c) 2022 Carlos Andres del Valle.
  * 
- * This program is free software: you can redistribute it and/or modify  
- * it under the terms of the GNU General Public License as published by  
- * the Free Software Foundation, version 3.
+ *Vector3D is under the terms of the BSD-3 license. We welcome feedback and contributions.
  *
- * This program is distributed in the hope that it will be useful, but 
- * WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
- * General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License 
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the BSD3 Public License 
+ * along with this program. If not, see <https://github.com/cdelv/Vector3D> LICENSE.
  */
 
 #include <iostream>
