@@ -3,6 +3,18 @@
 
 A C++ fast and lightweight 3D vector library.
 
+# Citation
+
+If this code was useful to you, I'll be very happy if you cite it:
+```
+@misc{vector3D,
+  title = {Vector3D},
+  author = {Carlos Andr\'{e}s del Valle},
+  howpublished = {\url{https://github.com/cdelv/Vector3D}},
+  year = {2021}
+}
+```
+
 # Usage
 On your C++ code include the file.
 ```
