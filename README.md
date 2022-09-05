@@ -56,11 +56,47 @@ If you plan to include a cross product on compound operations, you have to be ca
 ```
   double result = v1*(v2^v3);
 ```
+
+You can get the norm of a vector in two different ways:
+```
+  vector3D v; v.load(1,2,3);
+  v.norm();
+  norm(v);
+```
+
+In the same way, the squared norm
+```
+  vector3D v; v.load(1,2,3);
+  v.norm2();
+  norm2(v);
+```
+You also can create a unitary vector from another one.
+```
+  vector3D v; v.load(1,2,3);
+  vector3D v1;
+  v.unit();
+  v1 = unit(v);
+```
+
+The first operation will convert v to unitary while unit(v) will output a unitary vector in the same direction as v.
+
+In the same manner, the angle between two vectors is
+```
+  vector3D v; v.load(1,2,3);
+  vector3D v1; v1.load(0,2,-3);
+  double ang;
+  ang = v.angle(v1);
+  ang = angle(v,v1);
+```
+
 # Tests and benchmarcks
 
 On the `Test` directory you can find tests done to ensure the library works fine. To run them, just type `make` or `make test`. To run the tests you need the google test library, make shure you have it installed and that it is on your `$PATH`. To install on Ubuntu.
 ```
 sudo apt install libgtest-dev
 ```
-All tests are runned automatically via GitHub action on every push. On the future, there will be a benchmarks directory where you would be able to inspect the performace of the library.
+All tests are runned automatically via GitHub action on every push. 
+
+
+You can benchmark the library with the command `make benchmark`. You'll find that all the operations take around 15 ns. Everything is compiled without optimizations. 
 
