@@ -37,6 +37,7 @@ std::pair <double,double> norm2_operation(void);
 std::pair <double,double> norm_ext_operation(void);
 std::pair <double,double> norm2_ext_operation(void);
 std::pair <double,double> angle_operation(void);
+std::pair <double,double> angle_ext_operation(void);
 std::pair <double,double> make_unit_operation(void);
 std::pair <double,double> make_unit_ext_operation(void);
 
@@ -61,7 +62,8 @@ int main(void)
     print_report("v.norm2()  average time: ",norm2_operation());
     print_report("norm(v)    average time: ",norm_ext_operation());
     print_report("norm2(v)   average time: ",norm2_ext_operation());
-    print_report("angle(v,u) average time: ",angle_operation());
+    print_report("v.angle(u) average time: ",angle_operation());
+    print_report("angle(v,u) average time: ",angle_ext_operation());
     print_report("v.unit()   average time: ",make_unit_operation());
     print_report("unit(v)    average time: ",make_unit_ext_operation());
 
@@ -329,6 +331,19 @@ std::pair <double,double> norm2_ext_operation(void){
     return std::make_pair(average(times), standard_deviation(times));
 }
 std::pair <double,double> angle_operation(void){
+    std::array<double, samples> times;
+    vector3D v; v.load(1.5,1,0.2);
+    vector3D u; u.load(4.5,-1,-0.2);
+    for (auto &i : times){
+        auto start = std::chrono::steady_clock::now();
+        v.angle(u);
+        auto end = std::chrono::steady_clock::now();
+        std::chrono::duration<double> diff = end-start;
+        i=std::chrono::duration_cast<std::chrono::nanoseconds>(diff).count();
+    }
+    return std::make_pair(average(times), standard_deviation(times));
+}
+std::pair <double,double> angle_ext_operation(void){
     std::array<double, samples> times;
     vector3D v; v.load(1.5,1,0.2);
     vector3D u; u.load(4.5,-1,-0.2);

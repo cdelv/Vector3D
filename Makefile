@@ -10,14 +10,21 @@
 # * along with this program. If not, see <https://github.com/cdelv/Vector3D> LICENSE.
 # */
 
-all: test
-
 test: test1.x
 
 test1.x: Tests/Test1.cpp
 	@g++ $^ -o $@ -lgtest -pthread
 	@./$@
 	@rm $@
+
+benchmark: benchmark.x
+
+benchmark.x: Benchmarks/benchmarks.cpp
+	@g++ $^ -o $@
+	@./$@
+	@rm $@
 	
 clean:
 	@rm -f *.x *.o a.out 
+	@rm -f Tests/*.x Tests/*.o Tests/a.out 
+	@rm -f Benchmarks/*.x Benchmarks/*.o Benchmarks/a.out
