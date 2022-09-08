@@ -57,6 +57,8 @@ If you plan to include a cross product on compound operations, you have to be ca
   double result = v1*(v2^v3);
 ```
 
+# Functions
+
 You can get the norm of a vector in two different ways:
 ```
   vector3D v; v.load(1,2,3);
