@@ -29,7 +29,7 @@ You could also initialize your vectors with the constructors. There are 3 constr
 ```
 vector3D v(1,2,3);
 vector3D u(v);
-w = vector3D();
+vector3D w = vector3D();
 ```
 You can create a vector from an other one, from the coordinates or create an empty (0,0,0) vector.
 
