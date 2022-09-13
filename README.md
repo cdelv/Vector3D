@@ -25,6 +25,14 @@ Then, declare your vector and initialize it.
 vector3D v;
 v.load(1,2,3);
 ```
+You could also initialize your vectors with the constructors. There are 3 constructors. 
+```
+vector3D v(1,2,3);
+vector3D u(v);
+w = vector3D();
+```
+You can create a vector from an other one, from the coordinates or create an empty (0,0,0) vector.
+
 You can access the vector components with functions.
 ```
 v.x(); v.y(); v.z();
