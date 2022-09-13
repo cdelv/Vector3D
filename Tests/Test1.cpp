@@ -10,11 +10,25 @@ Optimized to be as fast as possible maintaining great usability.
  * You should have received a copy of the BSD3 Public License 
  * along with this program. If not, see <https://github.com/cdelv/Vector3D> LICENSE.
  */
-
-
 #include "../vector.h"
 #include <gtest/gtest.h>
 
+//Constructors
+TEST(Constructors, constructor){
+  vector3D a,b,c;
+  a = vector3D();
+  b = vector3D(1,2,3);
+  c = vector3D(a+b);
+
+  vector3D A(1,2,3);
+  vector3D B(c);
+
+  EXPECT_EQ(0.0, a.x());
+  EXPECT_EQ(3.0, b.z());
+  EXPECT_EQ(2.0, c.y());
+  EXPECT_EQ(1.0, A.x());
+  EXPECT_EQ(1.0, B.x());
+}
 //Initialize the vector
 TEST(Initialization, load){
   vector3D v;
@@ -185,7 +199,7 @@ TEST(Scalar_multiplication, multiplication_operator)
   EXPECT_EQ(10.2, v1.y());
   EXPECT_EQ(-19.38, v1.z());
 
-  v1=a*v2;
+  v1=v2*a;
   EXPECT_EQ(-4.25, v1.x());
   EXPECT_EQ(10.2, v1.y());
   EXPECT_EQ(-19.38, v1.z());
@@ -303,13 +317,13 @@ TEST(Norm, Norm){
   EXPECT_EQ(3, v.norm());
 
   v.load(-10,2.5,2);
-  EXPECT_EQ(10.5, v.norm());
+  EXPECT_EQ(10.5, norm(v));
   
   v.load(14,-14,0);
   EXPECT_EQ(14*std::sqrt(2), v.norm());
   
   v.load(0,-2,33);
-  EXPECT_EQ(std::sqrt(1093), v.norm());
+  EXPECT_EQ(std::sqrt(1093), norm(v));
   
   v.load(1,0,4);
   EXPECT_EQ(std::sqrt(17), v.norm());
@@ -320,13 +334,13 @@ TEST(Squared_Norm, Squared_Norm){
   EXPECT_EQ(9, v.norm2());
 
   v.load(-10,2.5,2);
-  EXPECT_EQ(110.25, v.norm2());
+  EXPECT_EQ(110.25, norm2(v));
   
   v.load(14,-14,0);
   
   
   v.load(0,-2,33);
-  EXPECT_EQ(1093, v.norm2());
+  EXPECT_EQ(1093, norm2(v));
   
   v.load(1,0,4);
   EXPECT_EQ(17, v.norm2());
@@ -341,10 +355,10 @@ TEST(cross, cross_operator){
   EXPECT_EQ(M_PI, angle(v1,v2));
 
   v1.load(0,1,0); v2.load(1,0,0);
-  EXPECT_EQ(M_PI/2, angle(v1,v2));
+  EXPECT_EQ(M_PI/2, v1.angle(v2));
 
   v1.load(1,0,0); v2.load(-1,0,0);
-  EXPECT_EQ(M_PI, angle(v1,v2));
+  EXPECT_EQ(M_PI, v1.angle(v2));
 
   v1.load(2,1,1); v2.load(2,4,5);
   EXPECT_EQ(std::acos(13*std::sqrt(30)/90), angle(v1,v2));
@@ -352,7 +366,21 @@ TEST(cross, cross_operator){
   v1.load(-3,2,10); v2.load(10,2,10);
   EXPECT_EQ(std::acos(37/std::sqrt(5763)), angle(v1,v2));
 }
+TEST(Unit_Vector_Creation, unit){
+  vector3D v(1,2,3);
+  v.unit();
+  EXPECT_EQ(1.0, norm(v));
 
+  v.load(1.2,45,-6.6);
+  v.unit();
+  EXPECT_EQ(1.0, v.norm());
+
+  v.load(1.2,45,-6.6);
+  EXPECT_EQ(1.0, unit(v).norm());
+
+  v.load(1.2,0,-6.6);
+  EXPECT_EQ(1.0, norm(unit(v)));
+}
 
 int main(int argc, char **argv)
 {

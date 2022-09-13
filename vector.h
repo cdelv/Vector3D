@@ -19,18 +19,20 @@ class vector3D{
   double X, Y, Z;
 
  public:
+  //Constructors
+  vector3D(void){X=0; Y=0; Z=0;};
+  vector3D(double x0, double y0, double z0){X=x0; Y=y0; Z=z0;};
+  vector3D(vector3D &V){X=V.X; Y=V.Y; Z=V.Z;};
+  //Destructor
+  ~vector3D(){};
   //Initialize the vector
-  void load(double x0, double y0, double z0){
-    X=x0; Y=y0; Z=z0;
-  };
+  void load(double x0, double y0, double z0){X=x0; Y=y0; Z=z0;};
   //Get the components
   double x(void){return X;};
   double y(void){return Y;};
   double z(void){return Z;};
   //Show the vector
-  void show(void){
-    std::cout <<"("<<X<<","<<Y<<","<<Z<<")\n";
-  };
+  void show(void){std::cout <<"("<<X<<","<<Y<<","<<Z<<")\n";};
   //-------------------------
   //Vectorial operators
   //-------------------------
