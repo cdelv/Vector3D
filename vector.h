@@ -20,9 +20,9 @@ class vector3D{
 
  public:
   //Constructors
-  vector3D(void){X=0; Y=0; Z=0;};
-  vector3D(double x0, double y0, double z0){X=x0; Y=y0; Z=z0;};
-  vector3D(vector3D &V){X=V.X; Y=V.Y; Z=V.Z;};
+  vector3D(void){this->X=0; this->Y=0; this->Z=0;};
+  vector3D(double x0, double y0, double z0){this->X=x0; this->Y=y0; this->Z=z0;};
+  vector3D(vector3D *V){this->X=V->X; this->Y=V->Y; this->Z=V->Z;};
   //Destructor
   ~vector3D(){};
   //Initialize the vector
