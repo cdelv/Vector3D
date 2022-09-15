@@ -381,6 +381,21 @@ TEST(Unit_Vector_Creation, unit){
   v.load(1.2,0,-6.6);
   EXPECT_EQ(1.0, norm(unit(v)));
 }
+TEST(Composit_Operations, composit){
+  vector3D v(1,2,3);
+  vector3D u(1,2,3);
+  v+=3*u-u*5;
+  v-=3*u-u*5;
+  v*=3*u*u*5;
+  v/=3*u*u*5;
+
+  EXPECT_EQ(u.x(), 1);
+  EXPECT_EQ(u.y(), 2);
+  EXPECT_EQ(u.z(), 3);
+  EXPECT_EQ(v.x(), 1);
+  EXPECT_EQ(v.y(), 2);
+  EXPECT_EQ(v.z(), 3);
+}
 
 int main(int argc, char **argv)
 {

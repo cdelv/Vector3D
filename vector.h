@@ -44,13 +44,13 @@ class vector3D{
     return *this;
   };
   //Sum
-  vector3D& operator+=(vector3D &V){
+  vector3D& operator+=(vector3D V){
     this->X = this->X + V.X;
     this->Y = this->Y + V.Y;
     this->Z = this->Z + V.Z;
     return *this;
   };
-  vector3D operator+(vector3D &V){
+  vector3D operator+(vector3D V){
     vector3D total;
     total.X = this->X + V.X;
     total.Y = this->Y + V.Y;
@@ -58,13 +58,13 @@ class vector3D{
     return total;
   };
   //Substraction
-  vector3D& operator-=(vector3D &V){
+  vector3D& operator-=(vector3D V){
     this->X = this->X - V.X;
     this->Y = this->Y - V.Y;
     this->Z = this->Z - V.Z;
     return *this;
   };
-  vector3D operator-(vector3D &V){
+  vector3D operator-(vector3D V){
     vector3D total;
     total.X = this->X - V.X;
     total.Y = this->Y - V.Y;
@@ -85,7 +85,7 @@ class vector3D{
     total.Z = this->Z*a;
     return total;
   };
-  friend vector3D operator*(double a, vector3D &V);	
+  friend vector3D operator*(double a, vector3D V);	
   //Scalar division
   vector3D& operator/=(double a){
     this->X = this->X/a;
@@ -101,11 +101,11 @@ class vector3D{
     return total;
   };
   //Dot product
-  double operator*(vector3D &V){
+  double operator*(vector3D V){
     return this->X*V.X+this->Y*V.Y+this->Z*V.Z;
   };
   //Cross product
-  vector3D operator^(vector3D &V){
+  vector3D operator^(vector3D V){
     vector3D total;
     total.X = this->Y*V.Z-this->Z*V.Y;
     total.Y = this->Z*V.X-this->X*V.Z;
@@ -135,7 +135,7 @@ class vector3D{
   };
   friend vector3D unit(vector3D V);
 };
-vector3D operator*(double a, vector3D &V){
+vector3D operator*(double a, vector3D V){
   V.X = V.X*a;
   V.Y = V.Y*a;
   V.Z = V.Z*a;
