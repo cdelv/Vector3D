@@ -71,6 +71,7 @@ class vector3D{
     total.Z = this->Z - V.Z;
     return total;
   };
+  friend vector3D operator-(vector3D V);
   //Scalar multiplication
   vector3D& operator*=(double a){
     this->X = this->X*a;
@@ -135,6 +136,12 @@ class vector3D{
   };
   friend vector3D unit(vector3D V);
 };
+vector3D operator-(vector3D V){
+  V.X = -V.X;
+  V.Y = -V.Y;
+  V.Z = -V.Z;
+  return V;
+}
 vector3D operator*(double a, vector3D V){
   V.X = V.X*a;
   V.Y = V.Y*a;

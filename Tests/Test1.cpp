@@ -395,6 +395,8 @@ TEST(Composit_Operations, composit){
   EXPECT_EQ(v.x(), 1);
   EXPECT_EQ(v.y(), 2);
   EXPECT_EQ(v.z(), 3);
+  v=-v;
+  EXPECT_EQ(v.z(), -3);
 }
 
 int main(int argc, char **argv)
