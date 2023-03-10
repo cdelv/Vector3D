@@ -1,3 +1,16 @@
+/*
+A C++ fast and lightweight 3D vector library.
+Optimized to be as fast as possible maintaining great usability.
+ 
+ * This file is part of the Vector3D distribution (https://github.com/cdelv/Vector3D).
+ * Copyright (c) 2022 Carlos Andres del Valle.
+ * 
+ * Vector3D is under the terms of the BSD-3 license. We welcome feedback and contributions.
+ *
+ * You should have received a copy of the BSD3 Public License 
+ * along with this program. If not, see <https://github.com/cdelv/Vector3D> LICENSE.
+ */
+#pragma once
 #include <iostream>
 #include <cmath>
 #include <immintrin.h>
@@ -12,6 +25,7 @@ __m128d _mm256_dp_pd(__m256d _x, __m256d _y) {
 
 
 // Cross product in AVX2
+/*
 inline static
 __m256d _mm256_cp_pd(__m256d _x, __m256d _y) {
     __m256d tmp0 = _mm256_shuffle_pd(_x,_x,_MM_SHUFFLE(3,0,2,1));
@@ -21,8 +35,9 @@ __m256d _mm256_cp_pd(__m256d _x, __m256d _y) {
     __m256d tmp4 = _mm256_shuffle_pd(tmp2,tmp2,_MM_SHUFFLE(3,0,2,1));
     return _mm256_sub_pd(tmp3,tmp4);
 }
+*/
 
-/*
+
 inline static
 __m256d _mm256_cp_pd(__m256d _x, __m256d _y) {
     return _mm256_permute4x64_pd(
@@ -32,7 +47,7 @@ __m256d _mm256_cp_pd(__m256d _x, __m256d _y) {
             ), _MM_SHUFFLE(3, 0, 2, 1)
         );
 }
-*/
+
 
 class vector3D
 {
@@ -48,18 +63,18 @@ public:
 
     // Set methods
     void load(const double x, const double y, const double z){_r = _mm256_set_pd(0.0, z, y, x);};
-    void set_x(const double x){_r[1] = x;};
-    void set_y(const double y){_r[2] = y;};
-    void set_z(const double z){_r[3] = z;};
+    void set_x(const double x){_r[0] = x;};
+    void set_y(const double y){_r[1] = y;};
+    void set_z(const double z){_r[2] = z;};
 
     // Get methods
-    double x(void){return _r[1];};
-    double y(void){return _r[2];};
-    double z(void){return _r[3];};
+    double x(void){return _r[0];};
+    double y(void){return _r[1];};
+    double z(void){return _r[2];};
     double operator[](const int n){return _r[n];};
 
     // Show vector
-    void show(void){std::cout <<"("<<_r[1]<<","<<_r[2]<<","<<_r[3]<<")\n";};
+    void show(void){std::cout <<"("<<_r[0]<<","<<_r[1]<<","<<_r[2]<<")\n";};
 
     // Addition Operators
     vector3D& operator+=(const vector3D &v){
@@ -93,7 +108,7 @@ public:
 
     // Scalar division
     vector3D& operator/=(const double a){
-        _r = _mm256_div_pd( _mm256_set1_pd(a), _r);
+        _r = _mm256_div_pd( _r, _mm256_set1_pd(a));
         return *this;
     }
     vector3D operator/(const double a){

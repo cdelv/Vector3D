@@ -10,6 +10,7 @@ Optimized to be as fast as possible maintaining great usability.
  * You should have received a copy of the BSD3 Public License 
  * along with this program. If not, see <https://github.com/cdelv/Vector3D> LICENSE.
  */
+#pragma once
 #include <iostream>
 #include <cmath>
 
