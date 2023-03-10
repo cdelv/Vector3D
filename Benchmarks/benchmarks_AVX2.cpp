@@ -3,7 +3,7 @@
 #include <utility>
 #include <vector>
 #include <numeric>
-#include "../vector.h"
+#include "../vectorAVX2.h"
 
 template<typename F, typename... Args>
 double FunctionTime(F func, double &stdev, Args&&... args){
@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
     vector3D v1, v2;
     double error;
 
-    std::cout << "Vector Benchmarks: \n";
+    std::cout << "AVX2 Vector Benchmarks: \n";
 
     // First Constructor
     std::cout << "\n- Constructor: vector3D v \n";
