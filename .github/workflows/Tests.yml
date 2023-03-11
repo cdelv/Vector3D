@@ -24,3 +24,4 @@ jobs:
       run: sudo apt-get install -y libgtest-dev
     - name: run tests
       run: make test
+      run: make test_AVX2
