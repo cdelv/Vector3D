@@ -19,7 +19,7 @@ If this code was useful to you, I'll be very happy if you cite it:
 
 # Compilation
 
-These libraries don't have any dependencies. Everything is raw C++. However, the AVX2 libraries require an additional compilation flag: `-mavx2`. Alternatively, use `-march=native`. Remember that AVX2 is a feature of the CPU. If your CPU doesn't support, it won't work. 
+These libraries don't have any dependencies. Everything is raw C++. However, the AVX2 libraries require an additional compilation flag: `-mavx2`. Alternatively, use `-march=native`. Remember that AVX2 is a feature of the CPU. If your CPU doesn't support AVX2, it won't work. 
 
 # Usage
 On your C++ code, include the file.
