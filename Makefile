@@ -10,15 +10,19 @@
 # * along with this program. If not, see <https://github.com/cdelv/Vector3D> LICENSE.
 # */
 
+all: test test_AVX2
+
 test: test.x
 test_AVX2: testAVX2.x
 
 test.x: Tests/Test.cpp
+	@echo Vector tests:
 	@g++ $^ -o $@ -lgtest -pthread 
 	@./$@
 	@rm $@
 
 testAVX2.x: Tests/Test_AVX2.cpp
+	@echo AVX2 Vector tests:
 	@g++ -mavx2 $^ -o $@ -lgtest -pthread 
 	@./$@
 	@rm $@
