@@ -9,7 +9,6 @@
 # * You should have received a copy of the BSD3 Public License 
 # * along with this program. If not, see <https://github.com/cdelv/Vector3D> LICENSE.
 # */
-
 all: test test_AVX2
 
 test: test.x
