@@ -262,7 +262,7 @@ TEST(Dot, dot_operator){
 
   v1.load(1.4,1,-10);
   v2.load(2,-5.4,-30);
-  EXPECT_EQ(297.4, v1*v2);
+  EXPECT_NEAR(297.4, v1*v2, 1e-8);
   
   v1.load(1,0,1);
   v2.load(0,1,0);
