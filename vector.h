@@ -137,11 +137,12 @@ public:
     friend double angle(const vector3D &v1, const vector3D &v2);
 
     // Make Unitary vector
-    void unit(void){
+    vector3D& unit(void){
         double N = norm();
         X=X/N;
         Y=Y/N;
         Z=Z/N;
+        return *this;
     };
     friend vector3D unit(const vector3D &V);
 };

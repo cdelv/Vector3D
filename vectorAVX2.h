@@ -23,21 +23,7 @@ __m128d _mm256_dp_pd(__m256d _x, __m256d _y) {
     return _mm_add_pd(c, _mm_unpackhi_pd(c, c));
 }
 
-
 // Cross product in AVX2
-/*
-inline static
-__m256d _mm256_cp_pd(__m256d _x, __m256d _y) {
-    __m256d tmp0 = _mm256_shuffle_pd(_x,_x,_MM_SHUFFLE(3,0,2,1));
-    __m256d tmp1 = _mm256_shuffle_pd(_y,_y,_MM_SHUFFLE(3,1,0,2));
-    __m256d tmp2 = _mm256_mul_pd(tmp0,_y);
-    __m256d tmp3 = _mm256_mul_pd(tmp0,tmp1);
-    __m256d tmp4 = _mm256_shuffle_pd(tmp2,tmp2,_MM_SHUFFLE(3,0,2,1));
-    return _mm256_sub_pd(tmp3,tmp4);
-}
-*/
-
-
 inline static
 __m256d _mm256_cp_pd(__m256d _x, __m256d _y) {
     return _mm256_permute4x64_pd(
@@ -47,7 +33,6 @@ __m256d _mm256_cp_pd(__m256d _x, __m256d _y) {
             ), _MM_SHUFFLE(3, 0, 2, 1)
         );
 }
-
 
 class vector3D
 {
@@ -149,9 +134,10 @@ public:
     friend double angle(const vector3D &v1, const vector3D &v2);
 
     // Make Unitary vector
-    void unit(void){
+    vector3D& unit(void){
         double N = norm();
         _r = _mm256_div_pd(_r, _mm256_set1_pd(N));
+        return *this;
     };
     friend vector3D unit(const vector3D &V);
 };

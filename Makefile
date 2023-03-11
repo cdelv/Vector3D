@@ -27,12 +27,12 @@ benchmark: benchmark.x
 benchmark_AVX2: benchmarkAVX2.x
 
 benchmark.x: Benchmarks/benchmarks.cpp
-	@g++ $^ -o $@
+	@g++ -O3 $^ -o $@
 	@./$@
 	@rm $@
 
 benchmarkAVX2.x: Benchmarks/benchmarks_AVX2.cpp
-	@g++ -mavx2 $^ -o $@
+	@g++ -O3 -mavx2 $^ -o $@
 	@./$@
 	@rm $@
 	

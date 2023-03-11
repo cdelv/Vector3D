@@ -153,6 +153,61 @@ int main(int argc, char *argv[])
     // Unit
     std::cout << "\n- Unit: unit(v) \n";
     std::cout << "time = " << FunctionTime([&v1](){unit(v1);}, error) << " ± " << error << " ns"<< std::endl;
+
+    // Array of vects
+    // Sum
+    int N = 10000;
+    std::vector<vector3D> vec1(N), vec2(N), vec3(N);
+    auto f1 = [&vec1, &vec2, &vec3, N](){
+        for (int i = 0; i < N; ++i)
+        {
+            vec3[i] = vec1[i] + vec2[i];
+        }
+    };
+    std::cout << "\n- Array of vects: v3[i] = v1[i] + v2[i] \n";
+    std::cout << "time = " << FunctionTime(f1, error)/1000 << " ± " << error/1000 << " micro s"<< std::endl;
+
+    // Dot product
+    double a[N];
+    auto f2 = [&vec1, &vec2, N, &a](){
+        for (int i = 0; i < N; ++i)
+        {
+            a[i] = vec1[i] * vec2[i];
+        }
+    };
+    std::cout << "\n- Array of vects: a[i] = v1[i] * v2[i] \n";
+    std::cout << "time = " << FunctionTime(f2, error)/1000 << " ± " << error/1000 << " micro s"<< std::endl;
+
+    // Cross product
+    auto f3 = [&vec1, &vec2, &vec3, N](){
+        for (int i = 0; i < N; ++i)
+        {
+            vec3[i] = vec1[i] ^ vec2[i];
+        }
+    };
+    std::cout << "\n- Array of vects: v3[i] = v1[i] ^ v2[i] \n";
+    std::cout << "time = " << FunctionTime(f3, error)/1000 << " ± " << error/1000 << " micro s"<< std::endl;
+
+    // Unitary
+    auto f4 = [&vec1, &vec2, N](){
+        for (int i = 0; i < N; ++i)
+        {
+            vec1[i] = vec2[i].unit();
+        }
+    };
+    std::cout << "\n- Array of vects: v1[i] = v2[i].unit() \n";
+    std::cout << "time = " << FunctionTime(f4, error)/1000 << " ± " << error/1000 << " micro s"<< std::endl;
+
+    // Norm
+    auto f5 = [&vec3, &a, N](){
+        for (int i = 0; i < N; ++i)
+        {
+            a[i] = norm(vec3[i]);
+        }
+    };
+    std::cout << "\n- Array of vects: a[i] = norm(v2[i]) \n";
+    std::cout << "time = " << FunctionTime(f5, error)/1000 << " ± " << error/1000 << " micro s"<< std::endl;
+
     
     return 0;
 }
