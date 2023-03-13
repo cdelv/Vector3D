@@ -108,9 +108,7 @@ public:
 
     // Cross product
     vector3D operator^(const vector3D &v){
-        vector3D total;
-        total._r = _mm256_cp_pd(_r, v._r);
-        return total;
+        return vector3D(_mm256_cp_pd(_r, v._r));
     };
     friend vector3D cross(const vector3D &v1, const vector3D &v2);
     
@@ -135,7 +133,7 @@ public:
 
     // Make Unitary vector
     vector3D& unit(void){
-        double N = norm();
+        double N = std::sqrt(_mm_cvtsd_f64(_mm256_dp_pd(_r, _r)));
         _r = _mm256_div_pd(_r, _mm256_set1_pd(N));
         return *this;
     };
@@ -149,16 +147,12 @@ vector3D operator+(const vector3D &V){
 
 // Friend Substraction Operator
 vector3D operator-(const vector3D &V){ // CHECK!
-    vector3D total;
-    total._r = _mm256_mul_pd(_mm256_set1_pd(-1.0), V._r);
-    return total;
+    return vector3D(_mm256_mul_pd(_mm256_set1_pd(-1.0), V._r));
 }
 
 // Friend Scalar product
 vector3D operator*(double a, const vector3D &V){
-    vector3D total;
-    total._r =_mm256_mul_pd(_mm256_set1_pd(a), V._r);
-    return total;
+    return vector3D(_mm256_mul_pd(_mm256_set1_pd(a), V._r));
 }
 
 // Friend Vectorial products
@@ -166,9 +160,7 @@ double dot(const vector3D &v1, const vector3D &v2){
     return _mm_cvtsd_f64(_mm256_dp_pd(v1._r, v2._r));
 }
 vector3D cross(const vector3D &v1, const vector3D &v2){
-    vector3D total;
-    total._r = _mm256_cp_pd(v1._r, v2._r);
-    return total;
+    return vector3D(_mm256_cp_pd(v1._r, v2._r));
 }
 
 // Friend Norm Operators
@@ -186,8 +178,6 @@ double angle(const vector3D &v1, const vector3D &v2){
 
 // Friend unitary operator
 vector3D unit(const vector3D &V){
-    vector3D total;
     double N = norm(V);
-    total._r = _mm256_div_pd(V._r, _mm256_set1_pd(N));
-    return total;
+    return vector3D(_mm256_div_pd(V._r, _mm256_set1_pd(N)));
 }

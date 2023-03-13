@@ -138,7 +138,7 @@ public:
 
     // Make Unitary vector
     vector3D& unit(void){
-        double N = norm();
+        double N = std::sqrt(X*X + Y*Y + Z*Z);
         X=X/N;
         Y=Y/N;
         Z=Z/N;
