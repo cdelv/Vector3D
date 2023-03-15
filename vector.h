@@ -15,7 +15,7 @@ Optimized to be as fast as possible maintaining great usability.
 #include <cmath>
 #include <type_traits>
 
-template <typename T>
+template <typename T, typename = std::enable_if_t<std::is_fundamental_v<T>>>
 class vector3D{
 public:
     T x=0, y=0, z=0;
