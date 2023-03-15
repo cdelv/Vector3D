@@ -41,14 +41,14 @@ double FunctionTime(F func, double &stdev, Args&&... args){
 
 int main(int argc, char *argv[])
 {
-    vector3D v1, v2;
+    vector3D<double> v1, v2;
     double error;
 
     std::cout << "Vector Benchmarks: \n";
 
     // First Constructor
     std::cout << "\n- Constructor: vector3D v \n";
-    std::cout << "time = " << FunctionTime([](){vector3D v;}, error) << " ± " << error << " ns"<< std::endl;
+    std::cout << "time = " << FunctionTime([](){vector3D<double> v;}, error) << " ± " << error << " ns"<< std::endl;
 
     // Second Constructor
     std::cout << "\n- Constructor: vector3D v(x,y,z) \n";
@@ -62,17 +62,9 @@ int main(int argc, char *argv[])
     std::cout << "\n- Load: v.load(x,y,z) \n";
     std::cout << "time = " << FunctionTime([&v1](){v1.load(1.0,1.0,1.0);}, error) << " ± " << error << " ns"<< std::endl;
 
-    // Get x() method
-    std::cout << "\n- Get: v.x() \n";
-    std::cout << "time = " << FunctionTime([&v1](){v1.x(); v1.y(); v1.z();}, error) << " ± " << error << " ns"<< std::endl;
-
     // Get [] method
     std::cout << "\n- Get: v[0] \n";
     std::cout << "time = " << FunctionTime([&v1](){v1[0]; v1[1]; v1[2];}, error) << " ± " << error << " ns"<< std::endl;
-
-    // Set method
-    std::cout << "\n- Set: v.set_x(x) \n";
-    std::cout << "time = " << FunctionTime([&v1](){v1.set_x(1.0);v1.set_y(1.0);v1.set_z(1.0);}, error) << " ± " << error << " ns"<< std::endl;
 
     // += method 
     std::cout << "\n- Addition: v1 += v2 \n";
@@ -169,7 +161,7 @@ int main(int argc, char *argv[])
     // Array of vects
     // Sum
     int N = 10000;
-    std::vector<vector3D> vec1(N), vec2(N), vec3(N);
+    std::vector<vector3D<double>> vec1(N), vec2(N), vec3(N);
     auto f1 = [&vec1, &vec2, &vec3, N](){
         for (int i = 0; i < N; ++i)
         {

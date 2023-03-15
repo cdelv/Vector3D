@@ -7,200 +7,198 @@ Optimized to be as fast as possible maintaining great usability.
  * 
  * Vector3D is under the terms of the BSD-3 license. We welcome feedback and contributions.
  *
- * You should have received a copy of the BSD3 Public License 
+ * you should have received a copy of the BSD3 Public License 
  * along with this program. If not, see <https://github.com/cdelv/Vector3D> LICENSE.
  */
 #pragma once
 #include <iostream>
 #include <cmath>
+#include <type_traits>
 
+template <typename T>
 class vector3D{
-private:
-    double X, Y, Z;
-
 public:
+    T x=0, y=0, z=0;
+
     // Constructors
-    vector3D(void){X=0.0; Y=0.0; Z=0.0;};
-    vector3D(const double x, const double y, const double z){X=x; Y=y; Z=z;};
-    vector3D(const vector3D &V){X=V.X; Y=V.Y; Z=V.Z;};
+    vector3D(void){}
+    vector3D(const T X, const T Y, const T Z){x=X; y=Y; z=Z;}
+    template<typename U>
+    vector3D(const vector3D<U> &V){x=V.x; y=V.y; z=V.z;}
 
     // Set methods
-    void load(const double x, const double y, const double z){X=x; Y=y; Z=z;};
-    void set_x(const double x){X = x;};
-    void set_y(const double y){Y = y;};
-    void set_z(const double z){Z = z;};
+    void load(const T X, const T Y, const T Z){x=X; y=Y; z=Z;}
 
     // Get methods
-    double x(void){return X;};
-    double y(void){return Y;};
-    double z(void){return Z;};
-    double operator[](const int n){double vals[3]={X, Y, Z}; return vals[n];};
+    T operator[](const int n){T vals[3]={x, y, z}; return vals[n];}
 
     // Show vector
-    void show(void){std::cout <<"("<<X<<","<<Y<<","<<Z<<")\n";};
+    void show(void){std::cout <<"("<<x<<","<<y<<","<<z<<")\n";}
 
-    // Addition Operators
-    vector3D& operator+=(const vector3D &V){
-        X = X + V.X;
-        Y = Y + V.Y;
-        Z = Z + V.Z;
+    // v += w  (vector addition)
+    template<typename U>
+    vector3D<T>& operator+=(const vector3D<U> &V){
+        x = x + V.x;
+        y = y + V.y;
+        z = z + V.z;
         return *this;
-    };
-    vector3D operator+(const vector3D &V){
-        vector3D total;
-        total.X = X + V.X;
-        total.Y = Y + V.Y;
-        total.Z = Z + V.Z;
-        return total;
-    };
-    friend vector3D operator+(const vector3D &V); // CHECK
+    }
 
-    // Substraction Operators
-    vector3D& operator-=(const vector3D &V){
-        X = X - V.X;
-        Y = Y - V.Y;
-        Z = Z - V.Z;
-        return *this;
+    // v + w  (vector addition)
+    template<typename U>
+    vector3D<decltype(T{}+U{})> operator+(const vector3D<U>& V){
+        return vector3D<decltype(T{}+U{})>(x + V.x, y + V.y, z + V.z);
+    }
+    /*// ** serializations
+    vector3D<double> operator+(const vector3D<double> &V){
+        return vector3D<double>(x + V.x, y + V.y, z + V.z);
     };
-    vector3D operator-(const vector3D &V){
-        vector3D total;
-        total.X = X - V.X;
-        total.Y = Y - V.Y;
-        total.Z = Z - V.Z;
-        return total;
-    };
-    friend vector3D operator-(const vector3D &V);
+    vector3D<float> operator+(const vector3D<float> &V){
+        return vector3D<float>(x + V.x, y + V.y, z + V.z);
+    };*/
 
-    // Scalar multiplication
-    vector3D& operator*=(const double a){
-        X = X*a;
-        Y = Y*a;
-        Z = Z*a;
+    // v -= w  (vector substraction)
+    template<typename U>
+    vector3D<T>& operator-=(const vector3D<U> &V){
+        x = x - V.x;
+        y = y - V.y;
+        z = z - V.z;
         return *this;
-    };
-    vector3D operator*(const double a){
-        vector3D total;
-        total.X = X*a;
-        total.Y = Y*a;
-        total.Z = Z*a;
-        return total;
-    };
-    friend vector3D operator*(const double a, const vector3D &V);	
+    }
+
+    // v - w  (vector substraction)
+    template<typename U>
+    vector3D<decltype(T{}-U{})> operator-(const vector3D<U>& V){
+        return vector3D<decltype(T{}-U{})>(x - V.x, y - V.y, z - V.z);
+    }
+
+    // v*=a  (multiplication by scalar)
+    template<typename U>
+    vector3D<T>& operator*=(const U a){
+        x = x*a;
+        y = y*a;
+        z = z*a;
+        return *this;
+    }
+
+    // v*a  (multiplication by scalar)
+    template<typename U, typename = std::enable_if_t<std::is_fundamental_v<U>>>
+    vector3D<decltype(T{}*U{})> operator*(const U a){
+        return vector3D<decltype(T{}*U{})>(x*a, y*a, z*a);
+    }
   
-    // Scalar division
-    vector3D& operator/=(const double a){
-        X = X/a;
-        Y = Y/a;
-        Z = Z/a;
+    // v/=a  (division by scalar)
+    template<typename U>
+    vector3D<T>& operator/=(const U a){
+        x = x/a;
+        y = y/a;
+        z = z/a;
         return *this;
-    };
-    vector3D operator/(const double a){
-        vector3D total;
-        total.X = X/a;
-        total.Y = Y/a;
-        total.Z = Z/a;
-        return total;
-    };
+    }
 
-    // Dot product
-    double operator*(const vector3D &V){
-        return X*V.X + Y*V.Y + Z*V.Z;
-    };
-    friend double dot(const vector3D &v1, const vector3D &v2);
+    // v/a  (division by scalar)
+    template<typename U>
+    vector3D<decltype(T{}/U{})> operator/(const U a) {
+        return vector3D<decltype(T{}/U{})>(x/a, y/a, z/a);
+    }
 
-    // Cross product
-    vector3D operator^(const vector3D &V){
-        vector3D total;
-        total.X = Y*V.Z - Z*V.Y;
-        total.Y = Z*V.X - X*V.Z;
-        total.Z = X*V.Y - Y*V.X;
-        return total;
-    };
-    friend vector3D cross(const vector3D &v1, const vector3D &v2);
+    // v*w  (dot product)
+    template<typename U>
+    decltype(T{}*U{}) operator*(const vector3D<U> &V){
+        return x*V.x + y*V.y + z*V.z;
+    }
 
-    // Norm
-    double norm2(void){
-        return X*X + Y*Y + Z*Z;
-    };    
-    double norm(void){
-        return std::sqrt(X*X + Y*Y + Z*Z);
-    };
-    friend double norm2(const vector3D &V);
-    friend double norm(const vector3D &V);
+    // v^w  (cross product)
+    template<typename U>  // The return type correspond to vector3D<T>
+    vector3D<decltype(T{}*U{})> operator^(const vector3D<U> &V){
+        return vector3D<decltype(T{}/U{})>(
+            y*V.z - z*V.y, 
+            z*V.x - x*V.z, 
+            x*V.y - y*V.x
+            );
+    }
+
+    // Norm Operations
+    // v.norm2() and v.norm()
+    T norm2(void){
+        return x*x + y*y + z*z;
+    }   
+    T norm(void){
+        return std::sqrt(x*x + y*y + z*z);
+    }
 
     // Angle between two vectors
     // atan2(norm(cross(u,v)),dot(u,v)) insted of acos(dot(v,w) / (norm(v)*norm(w))) 
     // as it is more acurate. acos fails with small angles. 
-    double angle(const vector3D &V){
+    // v.angle(w)
+    template<typename U>
+    double angle(const vector3D<U> &V){
         return std::atan2((*this^V).norm(), *this*V);
-    };
-    friend double angle(const vector3D &v1, const vector3D &v2);
+    }
 
-    // Make Unitary vector
-    vector3D& unit(void){
-        double N = std::sqrt(X*X + Y*Y + Z*Z);
-        X=X/N;
-        Y=Y/N;
-        Z=Z/N;
+    // v.unit()  (Unitary vector)
+    vector3D<T>& unit(void){
+        double N = std::sqrt(x*x + y*y + z*z);
+        x=x/N;
+        y=y/N;
+        z=z/N;
         return *this;
-    };
-    friend vector3D unit(const vector3D &V);
+    }
 };
 
-// Friend Addition Operator
-vector3D operator+(const vector3D &V){
-    return vector3D(V);
+// +v
+template <typename T>
+vector3D<T> operator+(const vector3D<T> &V){
+    return vector3D<T>(V);
 }
 
-// Friend Substraction Operator
-vector3D operator-(const vector3D &V){
-    vector3D total;
-    total.X = -V.X;
-    total.Y = -V.Y;
-    total.Z = -V.Z;
-    return total;
+// -v
+template <typename T>
+vector3D<T> operator-(const vector3D<T> &V){
+    return vector3D<T>(-V.x,-V.y,-V.z);
 }
 
-// Friend Scalar product
-vector3D operator*(double a, const vector3D &V){
-    vector3D total;
-    total.X = V.X*a;
-    total.Y = V.Y*a;
-    total.Z = V.Z*a;
-    return total;
+// a*v  (scalar product)  // consider using constexpr
+template <typename T, typename U, typename = std::enable_if_t<std::is_fundamental_v<T>>>
+vector3D<decltype(T{}*U{})> operator*(T a, const vector3D<U> &V){
+    return vector3D<typename std::common_type<T, U>::type>(a*V.x, a*V.y, a*V.z);
 }
 
-// Friend Vectorial products
-double dot(const vector3D &v1, const vector3D &v2){
-    return v1.X*v2.X + v1.Y*v2.Y + v1.Z*v2.Z;
-}
-vector3D cross(const vector3D &v1, const vector3D &v2){
-    vector3D total;
-    total.X = v1.Y*v2.Z - v1.Z*v2.Y;
-    total.Y = v1.Z*v2.X - v1.X*v2.Z;
-    total.Z = v1.X*v2.Y - v1.Y*v2.X;
-    return total;
+// dot(v,w)  (dot product)
+template<typename T, typename U> // TYPE!!
+decltype(T{}*U{}) dot(const vector3D<T> &v1, const vector3D<U> &v2){
+    return v1.x*v2.x + v1.y*v2.y + v1.z*v2.z;
 }
 
-// Friend Norm Operators
-double norm2(const vector3D &V){
-    return V.X*V.X + V.Y*V.Y + V.Z*V.Z;
+// cross(v^w)  (cross product)
+template<typename T, typename U>
+vector3D<decltype(T{}*U{})> cross(const vector3D<T> &v1, const vector3D<U> &v2){
+    return vector3D<typename std::common_type<T, U>::type>(
+        v1.y*v2.z - v1.z*v2.y,
+        v1.z*v2.x - v1.x*v2.z,
+        v1.x*v2.y - v1.y*v2.x
+        );
+}
+
+// norm(v) and norm2(v)  (Norm Operators)
+template <typename T>
+T norm2(const vector3D<T> &V){
+    return V.x*V.x + V.y*V.y + V.z*V.z;
 } 
-double norm(const vector3D &V){
-    return std::sqrt(V.X*V.X + V.Y*V.Y + V.Z*V.Z);
+template <typename T>
+T norm(const vector3D<T> &V){
+    return std::sqrt(V.x*V.x + V.y*V.y + V.z*V.z);
 }
 
 // Friend Angle between two vectors
-double angle(const vector3D &v1, const vector3D &v2){
+template<typename T, typename U> // TYPE!!
+double angle(const vector3D<T> &v1, const vector3D<U> &v2){
     return std::atan2(norm(cross(v1,v2)), dot(v1,v2));
 }
 
 // Friend unitary operator
-vector3D unit(const vector3D &V){
-    vector3D total;
-    double N = norm(V);
-    total.X=V.X/N;
-    total.Y=V.Y/N;
-    total.Z=V.Z/N;
-    return total;
+template <typename T>
+vector3D<T> unit(const vector3D<T> &V){
+    T N = std::sqrt(V.x*V.x + V.y*V.y + V.z*V.z);
+    return vector3D<T>(V.x/N,V.y/N,V.z/N);
 }
