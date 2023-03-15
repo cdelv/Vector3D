@@ -17,7 +17,7 @@ Optimized to be as fast as possible maintaining great usability.
 TEST(Constructors, constructor){
   vector3D<double> a,b,c;
   a = vector3D<double>();
-  b = vector3D(1,2,3);
+  b = vector3D<double>(1,2,3);
   c = vector3D(a+b);
 
   vector3D A(1,2,3);
@@ -382,8 +382,8 @@ TEST(Unit_Vector_Creation, unit){
   EXPECT_EQ(1.0, norm(unit(v)));
 }
 TEST(Composit_Operations, composit){
-  vector3D v(1,2,3);
-  vector3D u(1,2,3);
+  vector3D<double> v(1,2,3);
+  vector3D<double> u(1,2,3);
   v+=3*u-u*5;
   v-=3*u-u*5;
   v*=3*u*u*5;
