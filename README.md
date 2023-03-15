@@ -1,9 +1,7 @@
 [![Build Status](https://img.shields.io/github/workflow/status/cdelv/Vector3D/Tests)](https://img.shields.io/github/workflow/status/cdelv/Vector3D/Tests)
 # Vector3D
 
-A C++ fast and lightweight 3D vector library. All operations of the vector3D data type are close to operations over doubles in performance. There's also an AVX2 version where the vector stores a `__m256d register`, and operations are performed using SIMD. If optimization is used in the compilation process, the performance between the two versions is the same for individual operations. Although, when doing operations of an array of vectors3D, the SIMD version is slightly faster. AVX2 intrinsics are not portable, so this implementation may need slight modifications for compiling in Windows or MAC. 
-
-Usage: both libraries work in the exact same way. 
+A C++ fast and lightweight 3D templated vector library. All the operations of the vector3D data type are close in execution time of operations of fundamental types. 
 
 # Citation
 
@@ -17,35 +15,40 @@ If this code was useful to you, I'll be very happy if you cite it:
 }
 ```
 
+# Whats New?
+The vectors are now templated, so they support fundamental types for their components. If the type can be inferred, there's no need to specify it in the construction. 
+
+```
+vector3D<float> v;
+vector3D w(1.0, 1.0, 1.0);
+```
+
+The vector components are now public.
+
 # Compilation
 
-These libraries don't have any dependencies. Everything is raw C++. However, the AVX2 libraries require an additional compilation flag: `-mavx2`. Alternatively, use `-march=native`. Remember that AVX2 is a feature of the CPU. If your CPU doesn't support AVX2, it won't work. 
+This library don't have any dependencies. Everything is raw C++. Use -O3 optimization to make it run even faster. 
 
 # Usage
 On your C++ code, include the file.
 ```
 #include "vector.h"
 ```
-or
-```
-#include "vectorAVX2.h"
-```
-for the SIMD version. 
 
 Then, declare your vector and initialize it.
 ```
-vector3D v;
+vector3D<int> v;
 v.load(1,2,3);
 ```
 You could also initialize your vectors with the other constructors:
 ```
-vector3D v(1,2,3);
+vector3D<float> v(1,2,3);
 vector3D u(v);
 vector3D w = u;
 ```
-You can access the vector components with functions.
+You can access the vector components with:
 ```
-v.x(); v.y(); v.z();
+v.x; v.y; v.z;
 ```
 You can also access the components as if the vector was an array.
 ```
@@ -53,30 +56,30 @@ v[0]; v[1]; v[2];
 ```
 To modify an individual component of the vector:
 ```
-v.set_x(1.0); v.set_y(-11.4); v.set_z(0);
+v.x = 1.0; v.y = -11.4; v.z = 0;
 ```
 
 Print the whole vector to the screen with `v.show()`. You can also calculate the norm of the vector with `v.norm()` and `norm(v)` or the square norm with `v.norm2()` and `norm2(v)`. Calculate the angle between two vectors (in radians) with the functions `angle(v1,v2)` and `v1.angle(v2)`. For the angle calculation, I use a more accurate operation than the traditional `acos(dot(v,w) / (norm(v)*norm(w)))`. 
-
-All vector components are of type double. 
 
 # Operators
 
 The usual operations between vectors such as `=`, `+`, `-`, `+=`, `-=` are supported. Also, multiplication and division by scalar exist.
 ```
-vector3D v; v.load(1,2,3);
+vector3D<double> v; v.load(1,2,3);
 double a=2.0;
-vector3D v1; v1= a*v; 
-vector3D v2; v2 = v*a; 
+vector3D v1= a*v; 
+vector3D v2 = v*a; 
 v*=a;                                  
 v.show(); v1.show(); v2.show();  //all these operations will output (2,4,6)
   
-vector3D v3; v3 = v/a; 
+vector3D v3 = v/a; 
 v/=a;                                  
 v.show(); v3.show();             //all these operations will output (1,2,3)
 ```
 
-`a/v` is not defined. Dot and cross-products can be performed with
+`a/v` is not defined. 
+
+Dot and cross-products can be performed with
 ```
 double Dot = v1*v2;
 vector3D cross = v1^v2;
@@ -90,31 +93,31 @@ If you plan to include a cross-product on compound operations,  be careful becau
 
 You can get the norm of a vector in two different ways:
 ```
-  vector3D v; v.load(1,2,3);
+  vector3D<float> v; v.load(1,2,3);
   v.norm();
   norm(v);
 ```
 
 In the same way, the squared norm
 ```
-  vector3D v; v.load(1,2,3);
+  vector3D<long double> v; v.load(1,2,3);
   v.norm2();
   norm2(v);
 ```
 You also can create a unitary vector from another one.
 ```
-  vector3D v; v.load(1,2,3);
-  vector3D v1;
+  vector3D<float> v; v.load(1,2,3);
+  vector3D<double> v1;
   v.unit();
   v1 = unit(v);
 ```
 
-The first operation will convert v to unitary while unit(v) will output a unitary vector in the same direction as v.
+The first operation will convert v to unitary while unit(v) will normalize v. Note that v and v1 were declared with different types. The copy constructor makes sure to do the type conversion.
 
 In the same manner, the angle between two vectors is
 ```
-  vector3D v; v.load(1,2,3);
-  vector3D v1; v1.load(0,2,-3);
+  vector3D<double> v; v.load(1,2,3);
+  vector3D<float> v1; v1.load(0,2,-3);
   double ang;
   ang = v.angle(v1);
   ang = angle(v,v1);
@@ -122,13 +125,13 @@ In the same manner, the angle between two vectors is
 
 # Tests and benchmarcks
 
-On the `Test` directory you can find tests done to ensure the library works fine. To run them, type `make` or `make test` and `make test_AVX2`. To run the tests you need the google test library. Make sure is installed and that it's on your `$PATH`. To install on Ubuntu.
+On the `Test` directory you can find tests done to ensure the library works fine. To run them, type `make` or `make test`. To run the tests you need the google test library. Make sure is installed and that it's on your `$PATH`. To install on Ubuntu.
 ```
 sudo apt install libgtest-dev
 ```
 All tests are run automatically via GitHub action on every push. 
 
-You can benchmark the library with the command `make benchmark` and `make benchmark_AVX2`. You'll find that all the operations take around 15 ns which is in the same range as a simple double addition. The average time was computed over 1000 samples in an 11th Gen Intel i5-1135G7 CPU. These results are for the non-SIMD version.
+You can benchmark the library with the command `make benchmark`. You'll find that all the operations take around 15 ns which is in the same range as a simple double addition. The average time was computed over 1000 samples in an 11th Gen Intel i5-1135G7 CPU. These results are for the non-SIMD version.
 
 ```
 - Constructor: vector3D v: time = 17.956 ± 2.20954 ns
@@ -168,4 +171,8 @@ You can benchmark the library with the command `make benchmark` and `make benchm
 - Array of vects: a[i] = norm(v2[i]): time = 11.5688 ± 1.09742 micro s
 ```
 
+# Comming Soon
 
+- vector2D
+- more tests 
+- An object that converts an array of vectors to a SOA structure.
