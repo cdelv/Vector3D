@@ -41,7 +41,7 @@ double FunctionTime(F func, double &stdev, Args&&... args){
 
 int main(int argc, char *argv[])
 {
-    vector3D<double> v1, v2;
+    vector3D<double> v1(1.0,1.0,1.0), v2(1.0,1.0,1.0);
     double error;
 
     std::cout << "Vector Benchmarks: \n";
