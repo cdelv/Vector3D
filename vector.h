@@ -16,7 +16,7 @@ Optimized to be as fast as possible maintaining great usability.
 #include <type_traits>
 #include <stdexcept>
 
-template <typename T, typename = std::enable_if_t<std::is_fundamental_v<T>>>
+template <typename T>
 class vector3D{
 public:
     T x, y, z;
@@ -24,7 +24,7 @@ public:
     // vector3D v; vector3D(), vector3D(x,y,z), v=w; vector3D(w)  (constructors)
     vector3D(void): x(0), y(0), z(0){} //default constructor
     vector3D(const T X, const T Y, const T Z): x(X), y(Y), z(Z){} //constructor
-    template<typename U, typename = std::enable_if_t<std::is_fundamental_v<U>>>
+    template<typename U>
     vector3D(const vector3D<U> &V){x=V.x; y=V.y; z=V.z;} //constructor
     // v.load(x,y,z)   (set method)
     void load(const T X, const T Y, const T Z){x=X; y=Y; z=Z;} //set method
@@ -43,7 +43,7 @@ public:
     auto norm2(void) const {return x*x + y*y + z*z;} //norm squared method
     auto norm(void) const {return std::sqrt(x*x + y*y + z*z);} //norm method
     // v.cross(w)
-    template <typename U, typename = std::enable_if_t<std::is_fundamental_v<U>>>
+    template <typename U>
     auto cross(const vector3D<U> &V){ //cross product method
         if constexpr(std::is_same_v<T, U>)
             return vector3D<T>(y*V.z - z*V.y, z*V.x - x*V.z, x*V.y - y*V.x);
@@ -51,10 +51,10 @@ public:
             return vector3D<std::common_type_t<T, U>>(y*V.z - z*V.y, z*V.x - x*V.z, x*V.y - y*V.x); 
     }
     // v.dot(w)
-    template<typename U, typename = std::enable_if_t<std::is_fundamental_v<U>>>
+    template<typename U>
     auto dot(const vector3D<U> &V) const {return x*V.x + y*V.y + z*V.z;} //dot product method
     // v.angle(w) more precise than acos(dot(v,w) / (norm(v)*norm(w))) 
-    template<typename U, typename = std::enable_if_t<std::is_fundamental_v<U>>>
+    template<typename U>
     auto angle(const vector3D<U> &V){ //angle method
         if (this->norm2() == 0 || V.norm2() == 0)
             throw std::invalid_argument("zero-vector error");
@@ -70,19 +70,19 @@ public:
 };
 
 // +v  (addition)
-template<typename T, typename = std::enable_if_t<std::is_fundamental_v<T>>>
+template<typename T>
 vector3D<T> operator+(const vector3D<T> &V){
     return vector3D<T>(V.x, V.y, V.z);
 }
 
 // -v  (substraction)
-template<typename T, typename = std::enable_if_t<std::is_fundamental_v<T>>>
+template<typename T>
 vector3D<T> operator-(const vector3D<T> &V){
     return vector3D<T>(-V.x,-V.y,-V.z);
 }
 
 // v1 += v2 operator  (vector addition)
-template <typename T, typename U, typename = std::enable_if_t<std::is_fundamental_v<T> && std::is_fundamental_v<U>>>
+template <typename T, typename U>
 auto operator+=(vector3D<T> &V1, const vector3D<U> &V2){
     V1.x += V2.x;
     V1.y += V2.y;
@@ -91,7 +91,7 @@ auto operator+=(vector3D<T> &V1, const vector3D<U> &V2){
 }
 
 // v1 -= v2 operator  (substraction equal)
-template <typename T, typename U, typename = std::enable_if_t<std::is_fundamental_v<T>>, typename = std::enable_if_t<std::is_fundamental_v<U>>>
+template <typename T, typename U>
 auto operator-=(vector3D<T> &V1, const vector3D<U> &V2){
     V1.x -= V2.x;
     V1.y -= V2.y;
@@ -100,7 +100,7 @@ auto operator-=(vector3D<T> &V1, const vector3D<U> &V2){
 }
 
 // v*=a  (multiplication by scalar)
-template <typename T, typename U, typename = std::enable_if_t<std::is_fundamental_v<T>>, typename = std::enable_if_t<std::is_fundamental_v<U>>>
+template <typename T, typename U>
 auto operator*=(vector3D<T> &V, const U a){
     V.x *= a;
     V.y *= a;
@@ -109,7 +109,7 @@ auto operator*=(vector3D<T> &V, const U a){
 }
 
 // v/=a  (division by scalar)
-template <typename T, typename U, typename = std::enable_if_t<std::is_fundamental_v<T>>, typename = std::enable_if_t<std::is_fundamental_v<U>>>
+template <typename T, typename U>
 auto operator/=(vector3D<T> &V, U a){
     if(std::abs(a) < std::numeric_limits<U>::epsilon())
         throw std::invalid_argument("Division by zero");
@@ -120,7 +120,7 @@ auto operator/=(vector3D<T> &V, U a){
 }
 
 // v+w  (vector addition)
-template <typename T, typename U, typename = std::enable_if_t<std::is_fundamental_v<T>>, typename = std::enable_if_t<std::is_fundamental_v<U>>>
+template <typename T, typename U>
 auto operator+(const vector3D<T> &V1, const vector3D<U> &V2){
     if constexpr(std::is_same_v<T, U>)
         return vector3D<T>(V1.x + V2.x, V1.y + V2.y, V1.z + V2.z);
@@ -130,7 +130,7 @@ auto operator+(const vector3D<T> &V1, const vector3D<U> &V2){
 }
 
 // v1 - v2 operator  (substraction)
-template <typename T, typename U, typename = std::enable_if_t<std::is_fundamental_v<T>>, typename = std::enable_if_t<std::is_fundamental_v<U>>>
+template <typename T, typename U>
 auto operator-(const vector3D<T> &V1, const vector3D<U> &V2){
     if constexpr(std::is_same_v<T, U>)
         return vector3D<T>(V1.x - V2.x, V1.y - V2.y, V1.z - V2.z);
@@ -139,7 +139,7 @@ auto operator-(const vector3D<T> &V1, const vector3D<U> &V2){
 }
 
 // a*v  (scalar product)
-template <typename T, typename U, typename = std::enable_if_t<std::is_fundamental_v<T>>, typename = std::enable_if_t<std::is_fundamental_v<U>>>
+template <typename T, typename U>
 auto operator*(T a, vector3D<U> &V){
     if constexpr(std::is_same_v<T, U>)
         return vector3D<T>(a*V.x, a*V.y, a*V.z);
@@ -148,7 +148,7 @@ auto operator*(T a, vector3D<U> &V){
 }
 
 // v*a  (multiplication by scalar)
-template <typename T, typename U, typename = std::enable_if_t<std::is_fundamental_v<T>>, typename = std::enable_if_t<std::is_fundamental_v<U>>>
+template <typename T, typename U>
 auto operator*(const vector3D<T> &V, U a){
     if constexpr(std::is_same_v<T, U>)
         return vector3D<T>(a*V.x, a*V.y, a*V.z);
@@ -157,7 +157,7 @@ auto operator*(const vector3D<T> &V, U a){
 }
 
 // v/a  (division by scalar)
-template <typename T, typename U, typename = std::enable_if_t<std::is_fundamental_v<T>>, typename = std::enable_if_t<std::is_fundamental_v<U>>>
+template <typename T, typename U>
 auto operator/(const vector3D<T> &V, U a){
     if(std::abs(a) <= std::numeric_limits<U>::epsilon())
         throw std::invalid_argument("Division by zero");
@@ -169,13 +169,13 @@ auto operator/(const vector3D<T> &V, U a){
 }
 
 // v*w  (dot product)
-template <typename T, typename U, typename = std::enable_if_t<std::is_fundamental_v<T>>, typename = std::enable_if_t<std::is_fundamental_v<U>>>
+template <typename T, typename U>
 auto operator*(const vector3D<T> &V1, const vector3D<U> &V2){
     return V1.x*V2.x + V1.y*V2.y + V1.z*V2.z;
 }
 
 // v^w  (cross product)
-template <typename T, typename U, typename = std::enable_if_t<std::is_fundamental_v<T>>, typename = std::enable_if_t<std::is_fundamental_v<U>>>
+template <typename T, typename U>
 auto operator^(const vector3D<T> &V1, const vector3D<U> &V2){
     if constexpr(std::is_same_v<T, U>)
         return vector3D<T>(V1.y*V2.z - V1.z*V2.y, V1.z*V2.x - V1.x*V2.z, V1.x*V2.y - V1.y*V2.x);
@@ -184,13 +184,13 @@ auto operator^(const vector3D<T> &V1, const vector3D<U> &V2){
 }
 
 // v*w  (dot product)
-template <typename T, typename U, typename = std::enable_if_t<std::is_fundamental_v<T>>, typename = std::enable_if_t<std::is_fundamental_v<U>>>
+template <typename T, typename U>
 auto dot(const vector3D<T> &V1, const vector3D<U> &V2){
     return V1.x*V2.x + V1.y*V2.y + V1.z*V2.z;
 }
 
 // v^w  (cross product)
-template <typename T, typename U, typename = std::enable_if_t<std::is_fundamental_v<T>>, typename = std::enable_if_t<std::is_fundamental_v<U>>>
+template <typename T, typename U>
 auto cross(const vector3D<T> &V1, const vector3D<U> &V2){
     if constexpr(std::is_same_v<T, U>)
         return vector3D<T>(V1.y*V2.z - V1.z*V2.y, V1.z*V2.x - V1.x*V2.z, V1.x*V2.y - V1.y*V2.x);
@@ -199,19 +199,19 @@ auto cross(const vector3D<T> &V1, const vector3D<U> &V2){
 }
 
 // norm2(v) (Norm Operators)
-template<typename T, typename = std::enable_if_t<std::is_fundamental_v<T>>>
+template<typename T>
 auto norm2(const vector3D<T> &V){
     return V.x*V.x + V.y*V.y + V.z*V.z;
 }
 
 // norm(v) (Norm Operators)
-template<typename T, typename = std::enable_if_t<std::is_fundamental_v<T>>>
+template<typename T>
 auto norm(const vector3D<T> &V){
     return std::sqrt(V.x*V.x + V.y*V.y + V.z*V.z);
 }
 
 // angle(v,w)   (angle between two vectors)
-template <typename T, typename U, typename = std::enable_if_t<std::is_fundamental_v<T>>, typename = std::enable_if_t<std::is_fundamental_v<U>>>
+template <typename T, typename U>
 auto angle(const vector3D<T> &V1, const vector3D<U> &V2){
     if (V1.norm2() == 0 || V2.norm2() == 0) {
         throw std::invalid_argument("zero-vector error");
@@ -220,10 +220,209 @@ auto angle(const vector3D<T> &V1, const vector3D<U> &V2){
 }
 
 // unit(v)   (unitary operator)
-template<typename T, typename = std::enable_if_t<std::is_fundamental_v<T>>>
+template<typename T>
 vector3D<T> unit(const vector3D<T> &V){
     auto N = std::sqrt(V.x*V.x + V.y*V.y + V.z*V.z);
     if ( N == 0 )
         return V;
     return vector3D<T>(V.x/N,V.y/N,V.z/N);
+}
+
+
+
+// Vector2D class
+template <typename T>
+class vector2D{
+public:
+    T x, y;
+
+    // vector2D v; vector2D(), vector2D(x,y,z), v=w; vector2D(w)  (constructors)
+    vector2D(void): x(0), y(0){} //default constructor
+    vector2D(const T X, const T Y): x(X), y(Y){} //constructor
+    template<typename U>
+    vector2D(const vector2D<U> &V){x=V.x; y=V.y;} //constructor
+    // v.load(x,y,z)   (set method)
+    void load(const T X, const T Y){x=X; y=Y;} //set method
+    // v[n]   (get method)
+    T& operator[](const int n){ //get method
+        switch (n) {
+            case 0: return x;
+            case 1: return y;
+            default: throw std::invalid_argument("Array index out of bounds");
+        }
+    }  
+    // v.show()  (show vector)
+    void show(void){std::cout <<"("<<x<<","<<y<<")\n";} //show method
+    // v.norm2() and v.norm()  (norm Operations)
+    auto norm2(void) const {return x*x + y*y ;} //norm squared method
+    auto norm(void) const {return std::sqrt(x*x + y*y );} //norm method
+    // v.cross(w)
+    template <typename U>
+    auto cross(const vector2D<U> &V){return x*V.y - y*V.x;} //cross product method
+    // v.dot(w)
+    template<typename U>
+    auto dot(const vector2D<U> &V) const {return x*V.x + y*V.y;} //dot product method
+    // v.angle(w) more precise than acos(dot(v,w) / (norm(v)*norm(w))) 
+    template<typename U>
+    auto angle(const vector2D<U> &V){ //angle method
+        if (this->norm2() == 0 || V.norm2() == 0)
+            throw std::invalid_argument("zero-vector error");
+        return std::atan2(*this^V, (*this)*V);
+    }    
+    // v.unit()  (unitary vector)
+    vector2D<T>& unit(void){ //unitary vector method
+        double N = std::sqrt(x*x + y*y);
+        if (N == 0.0) return *this;
+        x=x/N; y=y/N;
+        return *this;
+    }
+};
+
+// +v  (addition)
+template<typename T>
+vector2D<T> operator+(const vector2D<T> &V){
+    return vector2D<T>(V.x, V.y);
+}
+
+// -v  (substraction)
+template<typename T>
+vector2D<T> operator-(const vector2D<T> &V){
+    return vector2D<T>(-V.x,-V.y);
+}
+
+// v1 += v2 operator  (vector addition)
+template <typename T, typename U>
+auto operator+=(vector2D<T> &V1, const vector2D<U> &V2){
+    V1.x += V2.x;
+    V1.y += V2.y;
+    return V1;
+}
+
+// v1 -= v2 operator  (substraction equal)
+template <typename T, typename U>
+auto operator-=(vector2D<T> &V1, const vector2D<U> &V2){
+    V1.x -= V2.x;
+    V1.y -= V2.y;
+    return V1;
+}
+
+// v*=a  (multiplication by scalar)
+template <typename T, typename U>
+auto operator*=(vector2D<T> &V, const U a){
+    V.x *= a;
+    V.y *= a;
+    return V;
+}
+
+// v/=a  (division by scalar)
+template <typename T, typename U>
+auto operator/=(vector2D<T> &V, U a){
+    if(std::abs(a) < std::numeric_limits<U>::epsilon())
+        throw std::invalid_argument("Division by zero");
+    V.x /= a;
+    V.y /= a;
+    return V;
+}
+
+// v+w  (vector addition)
+template <typename T, typename U>
+auto operator+(const vector2D<T> &V1, const vector2D<U> &V2){
+    if constexpr(std::is_same_v<T, U>)
+        return vector2D<T>(V1.x + V2.x, V1.y + V2.y);
+    else
+        return vector2D<std::common_type_t<T, U>>(V1.x + V2.x, V1.y + V2.y);
+    
+}
+
+// v1 - v2 operator  (substraction)
+template <typename T, typename U>
+auto operator-(const vector2D<T> &V1, const vector2D<U> &V2){
+    if constexpr(std::is_same_v<T, U>)
+        return vector2D<T>(V1.x - V2.x, V1.y - V2.y);
+    else
+        return vector2D<std::common_type_t<T, U>>(V1.x - V2.x, V1.y - V2.y);
+}
+
+// a*v  (scalar product)
+template <typename T, typename U>
+auto operator*(T a, vector2D<U> &V){
+    if constexpr(std::is_same_v<T, U>)
+        return vector2D<T>(a*V.x, a*V.y);
+    else
+        return vector2D<std::common_type_t<T, U>>(a*V.x, a*V.y);
+}
+
+// v*a  (multiplication by scalar)
+template <typename T, typename U>
+auto operator*(const vector2D<T> &V, U a){
+    if constexpr(std::is_same_v<T, U>)
+        return vector2D<T>(a*V.x, a*V.y);
+    else
+        return vector2D<std::common_type_t<T, U>>(a*V.x, a*V.y);
+}
+
+// v/a  (division by scalar)
+template <typename T, typename U>
+auto operator/(const vector2D<T> &V, U a){
+    if(std::abs(a) <= std::numeric_limits<U>::epsilon())
+        throw std::invalid_argument("Division by zero");
+    
+    if constexpr(std::is_same_v<T, U>)
+        return vector2D<T>(V.x/a, V.y/a);
+    else
+        return vector2D<std::common_type_t<T, U>>(V.x/a, V.y/a);
+}
+
+// v*w  (dot product)
+template <typename T, typename U>
+auto operator*(const vector2D<T> &V1, const vector2D<U> &V2){
+    return V1.x*V2.x + V1.y*V2.y;
+}
+
+// v^w  (cross product)
+template <typename T, typename U>
+auto operator^(const vector2D<T> &V1, const vector2D<U> &V2){
+    return V1.x*V2.y - V1.y*V2.x;
+}
+
+// v*w  (dot product)
+template <typename T, typename U>
+auto dot(const vector2D<T> &V1, const vector2D<U> &V2){
+    return V1.x*V2.x + V1.y*V2.y;
+}
+
+// v^w  (cross product)
+template <typename T, typename U>
+auto cross(const vector2D<T> &V1, const vector2D<U> &V2){
+    return V1.x*V2.y - V1.y*V2.x;
+}
+
+// norm2(v) (Norm Operators)
+template<typename T>
+auto norm2(const vector2D<T> &V){
+    return V.x*V.x + V.y*V.y;
+}
+
+// norm(v) (Norm Operators)
+template<typename T>
+auto norm(const vector2D<T> &V){
+    return std::sqrt(V.x*V.x + V.y*V.y);
+}
+
+// angle(v,w)   (angle between two vectors)
+template <typename T, typename U>
+auto angle(const vector2D<T> &V1, const vector2D<U> &V2){
+    if (V1.norm2() == 0 || V2.norm2() == 0) {
+        throw std::invalid_argument("zero-vector error");
+    }
+    return std::atan2(V1^V2, V1*V2);
+}
+
+// unit(v)   (unitary operator)
+template<typename T>
+vector2D<T> unit(const vector2D<T> &V){
+    auto N = std::sqrt(V.x*V.x + V.y*V.y + V.z*V.z);
+    if ( N == 0 )
+        return V;
+    return vector2D<T>(V.x/N,V.y/N);
 }
