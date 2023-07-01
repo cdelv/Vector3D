@@ -34,150 +34,170 @@ __m256d _mm256_cp_pd(__m256d _x, __m256d _y) {
         );
 }
 
+template <typename T>
 class vector3D
 {
 private:
     __m256d _r;
 
 public:
-    // Constructors
-    vector3D(){_r = _mm256_setzero_pd();};
-    vector3D(const __m256d _R){_r = _R;};
-    vector3D(const double x, const double y, const double z){_r = _mm256_set_pd(0.0, z, y, x);};
-    vector3D(const vector3D &v){_r = v._r;};
+    double &x, &y, &z;
 
-    // Set methods
-    void load(const double x, const double y, const double z){_r = _mm256_set_pd(0.0, z, y, x);};
-    void set_x(const double x){_r[0] = x;};
-    void set_y(const double y){_r[1] = y;};
-    void set_z(const double z){_r[2] = z;};
-
-    // Get methods
-    double x(void){return _r[0];};
-    double y(void){return _r[1];};
-    double z(void){return _r[2];};
-    double operator[](const int n){return _r[n];};
-
-    // Show vector
-    void show(void){std::cout <<"("<<_r[0]<<","<<_r[1]<<","<<_r[2]<<")\n";};
-
-    // Addition Operators
-    vector3D& operator+=(const vector3D &v){
-        _r = _mm256_add_pd(_r, v._r);
+    vector3D(const __m256d& _R) : x(_r[0]), y(_r[1]), z(_r[2]), _r(_R) {}
+    // vector3D v; vector3D()
+    vector3D() : _r(_mm256_setzero_pd()), x(_r[0]), y(_r[1]), z(_r[2]) {}
+    // vector3D(x,y,z)
+    vector3D(const T X, const T Y, const T Z) : x(_r[0]), y(_r[1]), z(_r[2]), _r(_mm256_set_pd(0.0, double(Z), double(Y), double(X))) {}
+    // vector3D(w)
+    template<typename U>
+    vector3D(const vector3D<U>& V) : x(_r[0]), y(_r[1]), z(_r[2]), _r(V._r) {}
+    // = operator (v=w)
+    vector3D& operator=(const vector3D& V){
+        _r = V._r;
+        //x = _r[3]; y = _r[2]; z = _r[1];
         return *this;
     }
-    vector3D operator+(const vector3D &v){
-        return vector3D(_mm256_add_pd(_r, v._r));
-    }
-    friend vector3D operator+(const vector3D &V); // CHECK
+    // v.load(x,y,z)   (set method)
+    void load(const double X, const double Y, const double Z){_r = _mm256_set_pd(0.0, Z, Y, X);};
+    // v[n]   (get method)
+    T& operator[](const int n){ //get method
+        switch (n) {
+            case 0: return x;
+            case 1: return y;
+            case 2: return z;
+            default: throw std::invalid_argument("Array index out of bounds");
+        }
+    }  
+    // v.show()  (show vector)
+    void show(void){std::cout <<"("<< x <<","<< y <<","<< z <<")\n";};
 
-    // Substraction Operators
-    vector3D& operator-=(const vector3D &v){
-        _r = _mm256_sub_pd(_r, v._r);
+    // +v (addition) operator
+    vector3D<T> operator+() const {
+        return vector3D<T>(_r);
+    }
+    // -v (subtraction) operator
+    vector3D<T> operator-() const {
+        return vector3D<T>(_mm256_sub_pd(_mm256_setzero_pd(), _r));
+    }
+    // += operator (vector addition)
+    template <typename U>
+    vector3D<T>& operator+=(const vector3D<U>& V) {
+        _r = _mm256_add_pd(_r, V._r);
         return *this;
     }
-    vector3D operator-(const vector3D &v){
-        return vector3D(_mm256_sub_pd(_r, v._r));
+    // += operator (vector addition)
+    template <typename U>
+    vector3D<T>& operator-=(const vector3D<U>& V) {
+        _r = _mm256_sub_pd(_r, V._r);
+        return *this;
     }
-    friend vector3D operator-(const vector3D &V);
-
-    // Scalar multiplication
-    vector3D& operator*=(const double a){
+    // *= operator (scalar multiplication)
+    vector3D<T>& operator*=(const double a) {
         _r = _mm256_mul_pd( _mm256_set1_pd(a), _r);
         return *this;
     }
-    vector3D operator*(const double a){
-        return vector3D( _mm256_mul_pd(_r, _mm256_set1_pd(a) ) );
-    }
-    friend vector3D operator*(const double a, const vector3D &V);
-
-    // Scalar division
-    vector3D& operator/=(const double a){
+    // v/=a  (division by scalar)
+    vector3D<T>& operator/=(const double a){
         _r = _mm256_div_pd( _r, _mm256_set1_pd(a));
         return *this;
     }
-    vector3D operator/(const double a){
-        return vector3D( _mm256_div_pd(_r, _mm256_set1_pd(a)) );
+    // v+w  (vector addition)
+    template <typename U>
+    auto operator+(const vector3D<U>& V) const {
+        return vector3D(_mm256_add_pd(_r, V._r));
     }
+    // v1-v2 operator  (substraction)
+    template <typename U>
+    auto operator-(const vector3D<U>& V) const {
+        return vector3D(_mm256_sub_pd(_r, V._r));
+    }
+    // v*a  (scalar product)
+    auto operator*(const double a) const {
+        return vector3D(_mm256_mul_pd( _mm256_set1_pd(a), _r));
+    }
+    // a*v  (scalar product)
+    friend vector3D<T> operator*(const double a, const vector3D<T>& vector) {
+        return vector * a;
+    }
+    // v/a (division by scalar)
+    auto operator/(const double a) const {
+        if (std::abs(a) <= std::numeric_limits<double>::epsilon())
+            throw std::invalid_argument("Division by zero");
 
-    // Dot product
-    double operator*(const vector3D &v){
-        return _mm_cvtsd_f64(_mm256_dp_pd(_r, v._r));
-    };
-    friend double dot(const vector3D &v1, const vector3D &v2);
+        return vector3D(_mm256_div_pd( _r, _mm256_set1_pd(a)));
+    }
+    // v*w  (dot product)
+    template <typename U>
+    double operator*(const vector3D<U> &V) const {
+        return _mm_cvtsd_f64(_mm256_dp_pd(_r, V._r));
+    }
+    // v.dot(w)
+    template<typename U>
+    double dot(const vector3D<U> &V) const {
+        return _mm_cvtsd_f64(_mm256_dp_pd(_r, V._r));
+    } 
+    // dot(v,w)  (dot product)
+    template <typename U>
+    friend double dot(const vector3D<T> &V1, const vector3D<U> &V2){
+        return _mm_cvtsd_f64(_mm256_dp_pd(V1._r, V2._r));
+    }
+    // v^w  (cross product)
+    template<typename U>
+    auto operator^(const vector3D<U> &V) const {
+        return vector3D(_mm256_cp_pd(_r, V._r));
+    }
+    // v.cross(w)
+    template <typename U>
+    auto cross(const vector3D<U>& V) const {
+        return vector3D(_mm256_cp_pd(_r, V._r));
+    }
+    // cross(v,w)  (cross product)
+    template <typename U>
+    friend auto cross(const vector3D<T> &V1, const vector3D<U> &V2){
+        return vector3D(_mm256_cp_pd(V1._r, V2._r));
+    }
+    // v.norm2()  (norm Operation)
+    auto norm2(void) const {return _mm_cvtsd_f64(_mm256_dp_pd(_r, _r));}
+    // norm2(v) (Norm Operators)
+    friend auto norm2(const vector3D<T> &V){
+        return _mm_cvtsd_f64(_mm256_dp_pd(V._r, V._r));
+    }
+    // v.norm() (Norm Operation)
+    auto norm(void) const {return std::sqrt(_mm_cvtsd_f64(_mm256_dp_pd(_r, _r)));} 
+    // norm(v) (Norm Operators)
+    friend auto norm(const vector3D<T> &V){
+        return std::sqrt(_mm_cvtsd_f64(_mm256_dp_pd(V._r, V._r)));
+    }
+    // v.angle(w) more precise than acos(dot(v,w) / (norm2(v))) 
+    template<typename U>
+    auto angle(const vector3D<U> &V) const { //angle method
+        if (this->norm2() == 0 || V.norm2() == 0)
+            throw std::invalid_argument("zero-vector error");
+        return std::atan2((*this^V).norm(), (*this)*V);
+    }
+    // angle(v,w)   (angle between two vectors)
+    template <typename U>
+    friend auto angle(const vector3D<T> &V1, const vector3D<U> &V2){
+        if (V1.norm2() == 0 || V2.norm2() == 0) {
+            throw std::invalid_argument("zero-vector error");
+        }
+        return std::atan2((V1^V2).norm(), V1*V2);
+    }
+    // v.unit()  (convert to unitary vector)
+    vector3D<T>& unit(void){
+        auto N = norm2();
+        if (N == 0.0) return *this;
 
-    // Cross product
-    vector3D operator^(const vector3D &v){
-        return vector3D(_mm256_cp_pd(_r, v._r));
-    };
-    friend vector3D cross(const vector3D &v1, const vector3D &v2);
-    
-    // Norm
-    double norm2(void){
-        return _mm_cvtsd_f64(_mm256_dp_pd(_r, _r));
-    };    
-    double norm(void){
-        return std::sqrt(_mm_cvtsd_f64(_mm256_dp_pd(_r, _r)));
-    };
-    
-    friend double norm2(const vector3D &V);
-    friend double norm(const vector3D &V);
-
-    // Angle between two vectors
-    // atan2(norm(cross(u,v)),dot(u,v)) insted of acos(dot(v,w) / (norm(v)*norm(w))) 
-    // as it is more acurate. acos fails with small angles. 
-    double angle(const vector3D &V){
-        return std::atan2((*this^V).norm(), *this*V);
-    };
-    friend double angle(const vector3D &v1, const vector3D &v2);
-
-    // Make Unitary vector
-    vector3D& unit(void){
-        double N = std::sqrt(_mm_cvtsd_f64(_mm256_dp_pd(_r, _r)));
-        _r = _mm256_div_pd(_r, _mm256_set1_pd(N));
+        N = 1.0/std::sqrt(N);
+        _r = _mm256_mul_pd(_r, _mm256_set1_pd(N));
         return *this;
-    };
-    friend vector3D unit(const vector3D &V);
+    }
+    // unit(v)   (unitary operator)
+    friend vector3D<T> unit(const vector3D<T> &V){
+        auto N = V.norm2();
+        if (N==0.0) return V;
+
+        N = 1.0/std::sqrt(N);
+        return vector3D<T>(_mm256_mul_pd(V._r, _mm256_set1_pd(N)));
+    }
 };
-
-// Friend Addition Operator
-vector3D operator+(const vector3D &V){
-    return vector3D(V);
-}
-
-// Friend Substraction Operator
-vector3D operator-(const vector3D &V){ // CHECK!
-    return vector3D(_mm256_mul_pd(_mm256_set1_pd(-1.0), V._r));
-}
-
-// Friend Scalar product
-vector3D operator*(double a, const vector3D &V){
-    return vector3D(_mm256_mul_pd(_mm256_set1_pd(a), V._r));
-}
-
-// Friend Vectorial products
-double dot(const vector3D &v1, const vector3D &v2){
-    return _mm_cvtsd_f64(_mm256_dp_pd(v1._r, v2._r));
-}
-vector3D cross(const vector3D &v1, const vector3D &v2){
-    return vector3D(_mm256_cp_pd(v1._r, v2._r));
-}
-
-// Friend Norm Operators
-double norm2(const vector3D &V){
-    return _mm_cvtsd_f64(_mm256_dp_pd(V._r, V._r));
-} 
-double norm(const vector3D &V){
-    return std::sqrt(_mm_cvtsd_f64(_mm256_dp_pd(V._r, V._r)));
-}
-
-// Friend Angle between two vectors
-double angle(const vector3D &v1, const vector3D &v2){
-    return std::atan2(norm(cross(v1,v2)), dot(v1,v2));
-}
-
-// Friend unitary operator
-vector3D unit(const vector3D &V){
-    double N = norm(V);
-    return vector3D(_mm256_div_pd(V._r, _mm256_set1_pd(N)));
-}

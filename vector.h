@@ -114,38 +114,38 @@ public:
     auto operator*(const vector3D<U> &V) const {
         return x * V.x + y * V.y + z * V.z;
     }
-    // v.dot(w)
+    // v.dot(w) (dot product)
     template<typename U>
     auto dot(const vector3D<U> &V) const {
     return x*V.x + y*V.y + z*V.z;
     } 
-    // v*w  (dot product)
+    // dot(v,w)  (dot product)
     template <typename U>
     friend auto dot(const vector3D<T> &V1, const vector3D<U> &V2){
         return V1.x*V2.x + V1.y*V2.y + V1.z*V2.z;
     }
-    // v^w  (cross product)
+    // v^w  (Cross product)
     template<typename U>
     auto operator^(const vector3D<U> &V) const {
         return vector3D(y * V.z - z * V.y, z * V.x - x * V.z, x * V.y - y * V.x);
     }
-    // v.cross(w)
+    // v.cross(w) (Cross product)
     template <typename U>
     auto cross(const vector3D<U>& V) const {
         return vector3D(y * V.z - z * V.y, z * V.x - x * V.z, x * V.y - y * V.x);
     }
-    // v^w  (cross product)
+    // cross(v,w)  (Cross product)
     template <typename U>
     friend auto cross(const vector3D<T> &V1, const vector3D<U> &V2){
         return vector3D(V1.y*V2.z - V1.z*V2.y, V1.z*V2.x - V1.x*V2.z, V1.x*V2.y - V1.y*V2.x);
     }
-    // v.norm2()  (norm Operation)
+    // v.norm2()  (Norm Operation)
     auto norm2(void) const {return x*x + y*y + z*z;}
     // norm2(v) (Norm Operators)
     friend auto norm2(const vector3D<T> &V){
         return V.x*V.x + V.y*V.y + V.z*V.z;
     }
-    // v.norm() (norm Operation)
+    // v.norm() (Norm Operation)
     auto norm(void) const {return std::sqrt(x*x + y*y + z*z);} 
     // norm(v) (Norm Operators)
     friend auto norm(const vector3D<T> &V){
