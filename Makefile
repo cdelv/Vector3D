@@ -9,10 +9,9 @@
 # * You should have received a copy of the BSD3 Public License 
 # * along with this program. If not, see <https://github.com/cdelv/Vector3D> LICENSE.
 # */
-all: test test_AVX2
+all: test
 
 test: test.x
-test_AVX2: testAVX2.x
 
 test.x: Tests/Test.cpp
 	@echo Vector tests:
@@ -20,22 +19,10 @@ test.x: Tests/Test.cpp
 	@./$@
 	@rm $@
 
-testAVX2.x: Tests/Test_AVX2.cpp
-	@echo AVX2 Vector tests:
-	@g++ -mavx2 $^ -o $@ -lgtest -pthread 
-	@./$@
-	@rm $@
-
 benchmark: benchmark.x
-benchmark_AVX2: benchmarkAVX2.x
 
 benchmark.x: Benchmarks/benchmarks.cpp
 	@g++ -O3 $^ -o $@
-	@./$@
-	@rm $@
-
-benchmarkAVX2.x: Benchmarks/benchmarks_AVX2.cpp
-	@g++ -O3 -mavx2 $^ -o $@
 	@./$@
 	@rm $@
 	
