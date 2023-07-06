@@ -21,7 +21,14 @@ test.x: Tests/Test.cpp
 
 benchmark: benchmark.x
 
-benchmark.x: Benchmarks/benchmarks.cpp
+benchmark.x: Benchmarks/benchmarks_3D.cpp
+	@g++ -O3 $^ -o $@
+	@./$@
+	@rm $@
+
+benchmark2D: benchmark2D.x
+
+benchmark2D.x: Benchmarks/benchmarks_2D.cpp
 	@g++ -O3 $^ -o $@
 	@./$@
 	@rm $@

@@ -3,7 +3,6 @@
 #include <random>
 
 #include "../vector.h"
-//#include "vectorAVX2.h"
 
 class Timer
 {
@@ -39,9 +38,9 @@ int main(int argc, char const *argv[])
     std::uniform_real_distribution<Ntype> rand(lower_bound,upper_bound);
 
     // Lists of vectors to avoid compiler optimizations
-    std::vector<vector3D<Ntype>> V1(N);
-    std::vector<vector3D<Ntype>> V2(N);
-    std::vector<vector3D<Ntype>> V3(N);
+    std::vector<vector2D<Ntype>> V1(N);
+    std::vector<vector2D<Ntype>> V2(N);
+    std::vector<vector2D<Ntype>> V3(N);
     std::vector<Ntype> Scalars(N);
     std::vector<Ntype> Scalars2(N);
 
@@ -50,8 +49,8 @@ int main(int argc, char const *argv[])
 
     // Initialize Vectors
     for(std::size_t i = 0; i < V3.size(); i++){
-        V1[i] = vector3D<Ntype>(rand(re), rand(re), rand(re));
-        V2[i] = vector3D<Ntype>(rand(re), rand(re), rand(re));
+        V1[i] = vector2D<Ntype>(rand(re), rand(re));
+        V2[i] = vector2D<Ntype>(rand(re), rand(re));
         Scalars[i] = rand(re) + 1.0;
     }
 
@@ -60,30 +59,30 @@ int main(int argc, char const *argv[])
     // First Constructor
     clock.Start();
     for(std::size_t i = 0; i < V3.size(); i++)
-        V3[i] = vector3D<Ntype>();
+        V3[i] = vector2D<Ntype>();
     clock.End();
-    std::cout << "Constructor: vector3D() -> "; clock.Report();
+    std::cout << "Constructor: vector2D() -> "; clock.Report();
 
     // Second Constructor
     clock.Start();
     for(std::size_t i = 0; i < V3.size(); i++)
-        V3[i] = vector3D<Ntype>(Scalars[i], Scalars[i], Scalars[i]);
+        V3[i] = vector2D<Ntype>(Scalars[i], Scalars[i]);
     clock.End();
-    std::cout << "Constructor: vector3D(x,y,z) -> "; clock.Report();
+    std::cout << "Constructor: vector2D(x,y) -> "; clock.Report();
 
     // Third Constructor
     clock.Start();
     for(std::size_t i = 0; i < V3.size(); i++)
         V3[i] = V2[i];
     clock.End();
-    std::cout << "Constructor: vector3D(v) -> "; clock.Report();
+    std::cout << "Constructor: vector2D(v) -> "; clock.Report();
 
     // Load
     clock.Start();
     for(std::size_t i = 0; i < V3.size(); i++)
-        V3[i].load(Scalars[i], Scalars[i], Scalars[i]);
+        V3[i].load(Scalars[i], Scalars[i]);
     clock.End();
-    std::cout << "Load: v.load(x,y,z) -> "; clock.Report();
+    std::cout << "Load: v.load(x,y) -> "; clock.Report();
 
     // Get [] method
     clock.Start();
@@ -200,21 +199,21 @@ int main(int argc, char const *argv[])
     // cross product
     clock.Start();
     for(std::size_t i = 0; i < V3.size(); i++)
-        V3[i] = V1[i]^V2[i];
+        Scalars2[i] = V1[i]^V2[i];
     clock.End();
     std::cout << "Cross product: v1^v2 -> "; clock.Report();
 
     // cross product
     clock.Start();
     for(std::size_t i = 0; i < V3.size(); i++)
-        V3[i] = cross(V1[i],V2[i]);
+        Scalars2[i] = cross(V1[i],V2[i]);
     clock.End();
     std::cout << "Cross product: cross(v1,v2) -> "; clock.Report();
 
     // cross product
     clock.Start();
     for(std::size_t i = 0; i < V3.size(); i++)
-        V3[i] = V1[i].cross(V2[i]);
+        Scalars2[i] = V1[i].cross(V2[i]);
     clock.End();
     std::cout << "Dot product: v1.cross(v2) -> "; clock.Report();
 
