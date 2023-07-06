@@ -369,17 +369,17 @@ TEST(cross, cross_operator){
 TEST(Unit_Vector_Creation, unit){
   vector3D<double> v(1,2,3);
   v.unit();
-  EXPECT_EQ(1.0, norm(v));
+  EXPECT_EQ(1, norm(v));
 
   v.load(1.2,45,-6.6);
   v.unit();
-  EXPECT_EQ(1.0, v.norm());
+  EXPECT_EQ(1, v.norm());
 
   v.load(1.2,45,-6.6);
-  EXPECT_EQ(1.0, unit(v).norm());
+  EXPECT_EQ(1, unit(v).norm());
 
   v.load(1.2,0,-6.6);
-  EXPECT_EQ(1.0, norm(unit(v)));
+  EXPECT_EQ(1, norm(unit(v)));
 }
 TEST(Composit_Operations, composit){
   vector3D<double> v(1,2,3);

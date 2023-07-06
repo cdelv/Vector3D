@@ -125,21 +125,21 @@ int main(int argc, char const *argv[])
     for(std::size_t i = 0; i < V3.size(); i++)
         V3[i] -= V2[i];
     clock.End();
-    std::cout << "Substraction: v1 -= v2 -> "; clock.Report();
+    std::cout << "Subtraction: v1 -= v2 -> "; clock.Report();
 
     // - method 
     clock.Start();
     for(std::size_t i = 0; i < V3.size(); i++)
         V3[i] = V1[i] - V2[i];
     clock.End();
-    std::cout << "Substraction: v1 - v2 -> "; clock.Report();
+    std::cout << "Subtraction: v1 - v2 -> "; clock.Report();
 
     // - method 
     clock.Start();
     for(std::size_t i = 0; i < V3.size(); i++)
         V3[i] = -V2[i];
     clock.End();
-    std::cout << "Substraction: -v -> "; clock.Report();
+    std::cout << "Subtraction: -v -> "; clock.Report();
 
     // *= method
     clock.Start();
