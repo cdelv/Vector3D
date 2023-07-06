@@ -1,6 +1,6 @@
-# Vector3D
+# Vector2D and Vector3D
 
-A C++ fast and lightweight 3D templated vector library. All the operations of the vector3D data type are close in execution time of operations of fundamental types. 
+A C++ fast and lightweight 2D and 3D templated vector library.
 
 # Citation
 
@@ -15,18 +15,22 @@ If this code was helpful to you, I'll be very happy if you cite it:
 ```
 
 # Whats New?
-The vectors are now templated, so they support fundamental types for their components. If the type can be inferred, there's no need to specify it in the construction. 
+* Vector2D: operates in the same manner as the Vector3D, but with only two components. The cross product of the Vector2D results in a scalar instead of a vector. 
+* The vectors are now templated, so they support fundamental types for their components. If the type can be inferred, there's no need to specify it in the construction. 
 
 ```
 vector3D<float> v;
 vector3D w(1.0, 1.0, 1.0);
+
+vector2D<float> v;
+vector2D w(1.0, 1.0);
 ```
-You can also use other compound types as long as they have arithmetic operations between them:
+* You can also use other compound types as long as they have arithmetic operations between them:
 ```
 vector3D<std::complex<double>> v;
 ```
 
-The vector components are now public.
+* The vector components are now public.
 
 # Compilation
 
@@ -173,6 +177,6 @@ Unit: unit(v) -> 307.456 Operations/μs
 
 # Comming Soon
 
-- vector2D
+- Unit Tests for vector2D
 - more tests 
 - An object that converts an array of vectors to an SOA structure.
