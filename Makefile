@@ -32,6 +32,13 @@ benchmark2D.x: Benchmarks/benchmarks_2D.cpp
 	@g++ -O3 $^ -o $@
 	@./$@
 	@rm $@
+
+benchmarkOld: benchmarkOld.x
+
+benchmarkOld.x: Benchmarks/benchmarks_3Dold.cpp
+	@g++ -O3 $^ -o $@
+	@./$@
+	@rm $@
 	
 clean:
 	@rm -f *.x *.o a.out 
