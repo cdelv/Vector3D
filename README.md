@@ -142,37 +142,37 @@ All tests are run automatically via GitHub action on every push.
 To benchmark the library, simply enter the command `make benchmark` and the average `operation/μs` it takes for `N=50000000` operations to be completed will be reported. Please note that the benchmark was conducted on an `11th Gen Intel i5-1135G7 CPU`.
 
 ```
-Constructor: vector3D() -> 406.444 Operations/μs
-Constructor: vector3D(x,y,z) -> 340.51 Operations/μs
-Constructor: vector3D(v) -> 270.56 Operations/μs
-Load: v.load(x,y,z) -> 248.643 Operations/μs
-Get: v[i] -> 341.469 Operations/μs
-Get: v.x -> 350.762 Operations/μs
-Addition: v1 += v2 -> 227.058 Operations/μs
-Addition: v1 + v2 -> 140.294 Operations/μs
-Addition: +v -> 175.819 Operations/μs
-Subtraction: v1 -= v2 -> 169.168 Operations/μs
-Subtraction: v1 - v2 -> 138.167 Operations/μs
-Subtraction: -v -> 234.721 Operations/μs
-Scalar multiplication: v *= a -> 300.12 Operations/μs
-Scalar multiplication: v*a -> 215.246 Operations/μs
-Scalar multiplication: a*v -> 219.573 Operations/μs
-Scalar division: v/=a -> 269.6 Operations/μs
-Scalar division: v/a -> 219.084 Operations/μs
-Dot product: v1*v2 -> 282.793 Operations/μs
-Dot product: dot(v1,v2) -> 278.553 Operations/μs
-Dot product: v1.dot(v2) -> 282.075 Operations/μs
-Cross product: v1^v2 -> 184.779 Operations/μs
-Cross product: cross(v1,v2) -> 182.058 Operations/μs
-Dot product: v1.cross(v2) -> 181.458 Operations/μs
-Norm2: v.norm2() -> 440.604 Operations/μs
-Norm2: norm2(v) -> 438.758 Operations/μs
-Norm: v.norm() -> 416.82 Operations/μs
-Norm: norm(v) -> 413.3 Operations/μs
-Angle: v1.angle(v2) -> 39.7422 Operations/μs
-Angle: angle(v1,v2) -> 39.6768 Operations/μs
-Unit: v.unit() -> 293.638 Operations/μs
-Unit: unit(v) -> 307.456 Operations/μs
+Constructor: vector3D() -> 352.018 Operations/μs
+Constructor: vector3D(x,y,z) -> 300.537 Operations/μs
+Constructor: vector3D(v) -> 239.279 Operations/μs
+Load: v.load(x,y,z) -> 301.041 Operations/μs
+Get: v[i] -> 299.445 Operations/μs
+Get: v.x -> 299.698 Operations/μs
+Addition: v1 += v2 -> 238.6 Operations/μs
+Addition: v1 + v2 -> 185.724 Operations/μs
+Addition: +v -> 237.697 Operations/μs
+Subtraction: v1 -= v2 -> 237.962 Operations/μs
+Subtraction: v1 - v2 -> 185.05 Operations/μs
+Subtraction: -v -> 239.24 Operations/μs
+Scalar multiplication: v *= a -> 298.847 Operations/μs
+Scalar multiplication: v*a -> 211.187 Operations/μs
+Scalar multiplication: a*v -> 207.089 Operations/μs
+Scalar division: v/=a -> 271.495 Operations/μs
+Scalar division: v/a -> 200.844 Operations/μs
+Dot product: v1*v2 -> 277.25 Operations/μs
+Dot product: dot(v1,v2) -> 281.18 Operations/μs
+Dot product: v1.dot(v2) -> 276.846 Operations/μs
+Cross product: v1^v2 -> 179.74 Operations/μs
+Cross product: cross(v1,v2) -> 178.176 Operations/μs
+Dot product: v1.cross(v2) -> 174.118 Operations/μs
+Norm2: v.norm2() -> 430.641 Operations/μs
+Norm2: norm2(v) -> 427.644 Operations/μs
+Norm: v.norm() -> 405.522 Operations/μs
+Norm: norm(v) -> 410.354 Operations/μs
+Angle: v1.angle(v2) -> 40.6619 Operations/μs
+Angle: angle(v1,v2) -> 40.8504 Operations/μs
+Unit: v.unit() -> 305.492 Operations/μs
+Unit: unit(v) -> 315.935 Operations/μs
 ```
 
 # Comming Soon
