@@ -29,7 +29,7 @@ using Ntype = double;
 
 int main(int argc, char const *argv[])
 {
-    const int N = 30000000;
+    const int N = 50000000;
 
     // For some random numbers
     std::default_random_engine re(10);

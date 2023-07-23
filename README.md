@@ -139,7 +139,7 @@ sudo apt install libgtest-dev
 ```
 All tests are run automatically via GitHub action on every push. 
 
-To benchmark the library, simply enter the command `make benchmark` and the average `operation/μs` it takes for `N=30000000` operations to be completed will be reported. Please note that the benchmark was conducted on an `11th Gen Intel i5-1135G7 CPU`.
+To benchmark the library, simply enter the command `make benchmark` and the average `operation/μs` it takes for `N=50000000` operations to be completed will be reported. Please note that the benchmark was conducted on an `11th Gen Intel i5-1135G7 CPU`.
 
 ```
 Constructor: vector3D() -> 406.444 Operations/μs
@@ -179,4 +179,3 @@ Unit: unit(v) -> 307.456 Operations/μs
 
 - Unit Tests for vector2D
 - more tests 
-- An object that converts an array of vectors to an SOA structure.
