@@ -20,15 +20,21 @@ class vector3D{
 public:
     T x, y, z;
 
-    // vector3D v; vector3D(), vector3D(x,y,z), v=w; vector3D(w)  (constructors)
-    inline vector3D(void): x(0), y(0), z(0){} //default constructor
-    inline vector3D(const T& X, const T& Y, const T& Z): x(X), y(Y), z(Z){} //constructor
-    template<typename U>
-    inline vector3D(const vector3D<U> &V): x(V.x), y(V.y), z(V.z) {} //constructor
+    // vector3D v; vector3D(), v=w; vector3D(w), vector3D(x,y,z)  (constructors)
+    vector3D() : x(0), y(0), z(0) {}
+    vector3D(const T& X, const T& Y, const T& Z) : x(X), y(Y), z(Z) {}
+    vector3D(const vector3D& V) = default;
+    vector3D(vector3D&& V) noexcept = default;
+    vector3D& operator=(const vector3D& V) = default;
+    vector3D& operator=(vector3D&& V) noexcept = default;
+
+    // destructor
+    ~vector3D() = default;
+
     // v.load(x,y,z)   (set method)
     inline void load(const T& X, const T& Y, const T& Z){x=X; y=Y; z=Z;} //set method
     // v[n]   (get method)
-    inline T& operator[](const int n){ //get method
+    inline T& operator[](const std::size_t n){ //get method
         switch (n) {
             case 0: return x;
             case 1: return y;
@@ -92,13 +98,13 @@ public:
     }
     // v*a  (scalar product)
     template <typename U>
-    inline auto operator*(const U& scalar) const {
-        return vector3D(x * scalar, y * scalar, z * scalar);
+    inline auto operator*(const U& a) const {
+        return vector3D(x * a, y * a, z * a);
     }
     // a*v  (scalar product)
     template <typename U>
-    friend inline vector3D<std::common_type_t<T, U>> operator*(const U& scalar, const vector3D<T>& vector) {
-        return vector * scalar;
+    friend inline vector3D<std::common_type_t<T, U>> operator*(const U& a, const vector3D<T>& vector) {
+        return vector * a;
     }
     // v/a (division by scalar)
     template <typename U>
@@ -185,11 +191,17 @@ class vector2D{
 public:
     T x, y;
 
-    // vector2D v; vector2D(), vector2D(x,y), v=w; vector2D(w)  (constructors)
-    inline vector2D(void): x(0), y(0){} //default constructor
-    inline vector2D(const T& X, const T& Y): x(X), y(Y){} //constructor
-    template<typename U>
-    inline vector2D(const vector2D<U> &V): x(V.x), y(V.y){} //constructor
+    // vector2D v; vector2D(), v=w; vector2D(w), vector2D(x,y,z)  (constructors)
+    vector2D() : x(0), y(0) {}
+    vector2D(const T& X, const T& Y) : x(X), y(Y) {}
+    vector2D(const vector2D& V) = default;
+    vector2D(vector2D&& V) noexcept = default;
+    vector2D& operator=(const vector2D& V) = default;
+    vector2D& operator=(vector2D&& V) noexcept = default;
+
+    // destructor
+    ~vector2D() = default;
+
     // v.load(x,y)   (set method)
     inline void load(const T& X, const T& Y){x=X; y=Y;} //set method
     // v[n]   (get method)
@@ -252,13 +264,13 @@ public:
     }
     // v*a  (scalar product)
     template <typename U>
-    inline auto operator*(const U& scalar) const {
-        return vector2D(x * scalar, y * scalar);
+    inline auto operator*(const U& a) const {
+        return vector2D(x * a, y * a);
     }
     // a*v  (scalar product)
     template <typename U>
-    friend inline vector2D<std::common_type_t<T, U>> operator*(const U& scalar, const vector2D<T>& vector) {
-        return vector * scalar;
+    friend inline vector2D<std::common_type_t<T, U>> operator*(const U& a, const vector2D<T>& vector) {
+        return vector * a;
     }
     // v/a (division by scalar)
     template <typename U>
