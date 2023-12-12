@@ -2,6 +2,9 @@
 #include <iostream>
 #include <complex>
 #include <cmath>
+#include <vector>
+#include <algorithm>
+
 /*
  * This file is part of the Vector3D distribution (https://github.com/cdelv/Vector3D).
  * Copyright (c) 2022 Carlos Andres del Valle.
@@ -58,7 +61,12 @@ std::ostream& operator<<(std::ostream& os, const __VecExpression<E, N>& vec) {
 */
 // Sumation of all elements
 template <typename E1, std::size_t N>
-inline constexpr auto sum(const __VecExpression<E1, N> &expr) noexcept;
+inline constexpr auto sum(const __VecExpression<E1, N> &expr) noexcept {
+    auto Sum = expr[0];
+    for (std::size_t i = 1; i < N; ++i)
+        Sum += expr[i];
+    return Sum;
+}
 // Specialization for N = 3
 template <typename E1>
 inline constexpr auto sum(const __VecExpression<E1, 3> &expr) noexcept {
@@ -342,15 +350,15 @@ public:
         x = expr[0]; y = expr[1]; z = expr[2];
     }
     inline constexpr const T& operator[](const std::size_t i) const {
-        if(i == 0) return x;
-        else if(i == 1) return y;
-        else if(i == 2) return z;
+        if (i == 0) return x;
+        else if (i == 1) return y;
+        else if (i == 2) return z;
         else throw std::out_of_range("vector3D: Index out of range");
     }
     inline constexpr T& operator[](const std::size_t i) {
-        if(i == 0) return x;
-        else if(i == 1) return y;
-        else if(i == 2) return z;
+        if (i == 0) return x;
+        else if (i == 1) return y;
+        else if (i == 2) return z;
         else throw std::out_of_range("vector3D: Index out of range");
     }
     /*
@@ -489,6 +497,89 @@ public:
         return std::sqrt(norm2());
     }
     inline constexpr const vector2D<T>& unit() noexcept {
+        *this /= norm();
+        return *this;
+    }
+};
+template <__Number T, std::size_t N>
+class vectorND : public __VecExpression<vectorND<T, N>, N> {
+private:
+    std::vector<T> data;
+public:
+    static inline constexpr const std::size_t size() {
+        return N;
+    }
+    std::vector<T>::iterator begin() { return data.begin();}
+    std::vector<T>::iterator end()   { return data.end();}
+
+    constexpr vectorND() noexcept = default;
+    constexpr vectorND(const vectorND& other) noexcept = default;
+    constexpr vectorND(vectorND&& other) noexcept = default;
+    constexpr vectorND(const T value) noexcept : data(N, value) {}
+    template <typename... Args>
+    constexpr vectorND(const Args&... args) noexcept : data {args...} {
+        static_assert(sizeof...(args) == N, "vectorND: Number of arguments does not match the size of the vector.");
+    }
+    constexpr vectorND& operator=(const vectorND& other) noexcept = default;
+    constexpr vectorND& operator=(vectorND&& other) noexcept = default;
+
+    template <typename... Args>
+    inline constexpr void load(const Args&... args) noexcept {
+        static_assert(sizeof...(args) == N, "vectorND: Number of arguments does not match the size of the vector.");
+        data = {args...};
+    }
+
+    template <typename E>
+    inline constexpr vectorND(const __VecExpression<E, N> &expr) noexcept {
+        for (std::size_t i = 0; i < N; ++i)
+            data[i] = expr[i];
+    }
+    inline constexpr const T& operator[](const std::size_t i) const {
+        return data[i];
+    }
+    inline constexpr T& operator[](const std::size_t i) {
+        return data[i];
+    }
+    /*
+    *  OPERATORS
+    */
+    template <typename E>
+    inline constexpr vectorND<T, N>& operator+=(const __VecExpression<E, N>& expr) noexcept {
+        for (std::size_t i = 0; i < N; ++i)
+            data[i] += expr[i];
+        return *this;
+    }
+    template <typename E>
+    inline constexpr vectorND<T, N>& operator-=(const __VecExpression<E, N>& expr) noexcept {
+        for (std::size_t i = 0; i < N; ++i)
+            data[i] -= expr[i];
+        return *this;
+    }
+    template <__Number E>
+    inline constexpr vectorND<T, N>& operator*=(const E& a) noexcept {
+        for (std::size_t i = 0; i < N; ++i)
+            data[i] *= a;
+        return *this;
+    }
+    template <__Number E>
+    inline constexpr vectorND<T, N>& operator/=(const E& a) noexcept {
+        for (std::size_t i = 0; i < N; ++i)
+            data[i] /= a;
+        return *this;
+    }
+    template <typename E>
+    inline constexpr vectorND<T, N>& operator/=(const __VecExpression<E, N>& expr) noexcept {
+        for (std::size_t i = 0; i < N; ++i)
+            data[i] /= expr[i];
+        return *this;
+    }
+    inline constexpr const T norm2() const noexcept {
+        return dot(*this, *this);
+    }
+    inline constexpr const T norm() const noexcept {
+        return std::sqrt(norm2());
+    }
+    inline constexpr const vectorND<T, N>& unit() noexcept {
         *this /= norm();
         return *this;
     }

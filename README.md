@@ -19,7 +19,7 @@ If this code was helpful to you, I'll be very happy if you cite it:
 # Whats New?
 * Vector2D: operates in the same manner as the Vector3D, but with only two components. The cross product of the Vector2D results in a scalar instead of a vector. 
 
-* VectorND: is a vector with N components whose size is defined at compile time. It uses std::numerics for some of the operations. (comming soon)
+* VectorND: is a vector with N components whose size is defined at compile time.
 
 * The library utilizes C++20 concepts to restrict the templates for improved compilation time, safety, and error messages. The templated vectors can support any arithmetic type or std::complex of an arithmetic type.
 
@@ -30,7 +30,7 @@ vector2D<float> u;
 vectorND<bool, 10> w;
 ```
 
-* The vector components are public for the vector2D and vector3D types.
+* The vector components are public for the vector2D and vector3D types `(v.x, v.y, v.z)`.
 
 # Compilation
 
@@ -69,7 +69,12 @@ v[0] = 1.2; v[1] = -1.2; v[2] = 22;
 
 For N-dimensional vectors, the only way of accessing the components is with the [] operator. 
 
-# vectorND ussage (comming soon)
+```
+vectorND<int, 5> v(1,2,3,4,5);
+vectorND<int, 4> u = {1,2,3,4};
+vectorND<int, 6> w(1);       // vector of 1's
+w.load(1,2,3,4,5,6);         // gets checked at compile time for the size of the vector and arguments 
+```
 
 Print the vector to the screen with `std::cout`. You can also calculate the norm of the vector with `v.norm()` and `norm(v)` or the square norm with `v.norm2()` and `norm2(v)`. Calculate the angle between two vectors (in radians) with the functions `angle(v1,v2)` and in degrees with `angled(v1,v2)`.
 
