@@ -1,6 +1,3 @@
-# A C++ fast and lightweight 3D vector library.
-# Optimized to be as fast as possible maintaining great usability.
-# 
 # * This file is part of the Vector3D distribution (https://github.com/cdelv/Vector3D).
 # * Copyright (c) 2022 Carlos Andres del Valle.
 # * 
@@ -8,35 +5,40 @@
 # *
 # * You should have received a copy of the BSD3 Public License 
 # * along with this program. If not, see <https://github.com/cdelv/Vector3D> LICENSE.
-# */
 all: test
 
-test: test.x
+test: test_3D.x test_2D.x
 
-test.x: Tests/Test.cpp
-	@echo Vector tests:
-	@g++ $^ -o $@ -lgtest -pthread 
+test_3D.x: Tests/Test_3D.cpp
+	@echo Vector3D tests:
+	@g++ $^ -std=c++20 -o $@ -lgtest -pthread
+	@./$@
+	@rm $@
+
+test_2D.x: Tests/Test_2D.cpp
+	@echo Vector2D tests:
+	@g++ $^ -std=c++20 -o $@ -lgtest -pthread
 	@./$@
 	@rm $@
 
 benchmark: benchmark.x
 
 benchmark.x: Benchmarks/benchmarks_3D.cpp
-	@g++ -O3 $^ -o $@
+	@g++ -O3 -std=c++20 $^ -o $@
 	@./$@
 	@rm $@
 
 benchmark2D: benchmark2D.x
 
 benchmark2D.x: Benchmarks/benchmarks_2D.cpp
-	@g++ -O3 $^ -o $@
+	@g++ -O3 -std=c++20 $^ -o $@
 	@./$@
 	@rm $@
 
 benchmarkOld: benchmarkOld.x
 
 benchmarkOld.x: Benchmarks/benchmarks_3Dold.cpp
-	@g++ -O3 $^ -o $@
+	@g++ -O3 -std=c++20 $^ -o $@
 	@./$@
 	@rm $@
 	

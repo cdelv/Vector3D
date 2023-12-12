@@ -1,353 +1,497 @@
-/*
-A C++ fast and lightweight 3D vector library.
-Optimized to be as fast as possible maintaining great usability.
- 
- * This file is part of the Vector3D distribution (https://github.com/cdelv/Vector3D).
- * Copyright (c) 2022 Carlos Andres del Valle.
- * 
- * Vector3D is under the terms of the BSD-3 license. We welcome feedback and contributions.
- *
- * you should have received a copy of the BSD3 Public License 
- * along with this program. If not, see <https://github.com/cdelv/Vector3D> LICENSE.
- */
 #pragma once
 #include <iostream>
+#include <complex>
 #include <cmath>
-#include <stdexcept>
+/*
+ * This file is part of the Vector3D distribution (https://github.com/cdelv/Vector3D).
+ * Copyright (c) 2022 Carlos Andres del Valle.
+ *
+ * Vector3D is under the terms of the BSD-3 license. We welcome feedback and contributions.
+ *
+ * you should have received a copy of the BSD3 Public License
+ * along with this program. If not, see <https://github.com/cdelv/Vector3D> LICENSE.
+ *
+ *
+ * This library requires C++20.
+*/
 
+// Type traits for the vector class
+// They ensure that the type of the vector elements supports the necessary operations.
+// You can modify the concept if you need a different type
+// C++ will add is_complex, but not jet. Therefore, I implement it.
 template <typename T>
-class vector3D{
+struct is_complex : std::false_type {};
+template <typename T>
+struct is_complex<std::complex<T>> : std::is_arithmetic<T> {};
+template <typename T>
+static constexpr bool is_complex_v = is_complex<T>::value;
+template <typename T>
+concept __Number = std::is_arithmetic_v<T> || is_complex_v<T>;
+/*
+*  Expression template to avoid unnecessary allocations in chained operations
+*/
+template <typename E, std::size_t N>
+class __VecExpression {
 public:
-    T x, y, z;
-
-    // vector3D v; vector3D(), v=w; vector3D(w), vector3D(x,y,z)  (constructors)
-    vector3D() : x(0), y(0), z(0) {}
-    vector3D(const T& X, const T& Y, const T& Z) : x(X), y(Y), z(Z) {}
-    vector3D(const vector3D& V) = default;
-    vector3D(vector3D&& V) noexcept = default;
-    vector3D& operator=(const vector3D& V) = default;
-    vector3D& operator=(vector3D&& V) noexcept = default;
-
-    // destructor
-    ~vector3D() = default;
-
-    // v.load(x,y,z)   (set method)
-    inline void load(const T& X, const T& Y, const T& Z){x=X; y=Y; z=Z;} //set method
-    // v[n]   (get method)
-    inline T& operator[](const std::size_t n){ //get method
-        switch (n) {
-            case 0: return x;
-            case 1: return y;
-            case 2: return z;
-            default: throw std::invalid_argument("Array index out of bounds");
-        }
-    }  
-    // v.show()  (show vector)
-    inline void show(void){std::cout <<"("<<x<<","<<y<<","<<z<<")\n";}
-    // +v (addition) operator
-    inline vector3D<T> operator+() const {
-        return *this;
+    inline constexpr const auto operator[](const std::size_t i) const {
+        return static_cast<E const&>(*this)[i];
     }
-    // -v (subtraction) operator
-    inline vector3D<T> operator-() const {
-        return vector3D<T>(-x, -y, -z);
-    }
-    // v1 += v2 operator  (vector addition)
-    template <typename U>
-    inline vector3D<T>& operator+=(const vector3D<U>& V) {
-          x = x + V.x;
-          y = y + V.y;
-          z = z + V.z;
-          return *this;
-    }
-    // v1 -= v2 operator  (substraction equal)
-    template <typename U>
-    inline vector3D<T>& operator-=(const vector3D<U>& V) {
-          x = x - V.x;
-          y = y - V.y;
-          z = z - V.z;
-          return *this;
-    }
-    // v*=a  (multiplication by scalar)
-    template <typename U>
-    inline vector3D<T>& operator*=(const U& a){
-        x = x * a;
-        y = y * a;
-        z = z * a;
-        return *this;
-    }
-    // v/=a  (division by scalar)
-    template <typename U>
-    inline vector3D<T>& operator/=(const U& a){
-        if(std::abs(a) < std::numeric_limits<U>::epsilon())
-            throw std::invalid_argument("Division by zero");
-        x = x/a;
-        y = y/a;
-        z = z/a;
-        return *this;
-    }
-    // v+w  (vector addition)
-    template <typename U>
-    inline auto operator+(const vector3D<U>& V) const {
-        return vector3D(x + V.x, y + V.y, z + V.z);
-    }
-    // v1-v2 operator  (substraction)
-    template <typename U>
-    inline auto operator-(const vector3D<U>& V) const {
-        return vector3D(x - V.x, y - V.y, z - V.z);
-    }
-    // v*a  (scalar product)
-    template <typename U>
-    inline auto operator*(const U& a) const {
-        return vector3D(x * a, y * a, z * a);
-    }
-    // a*v  (scalar product)
-    template <typename U>
-    friend inline vector3D<std::common_type_t<T, U>> operator*(const U& a, const vector3D<T>& vector) {
-        return vector * a;
-    }
-    // v/a (division by scalar)
-    template <typename U>
-    inline auto operator/(const U& a) const {
-        if (std::abs(a) <= std::numeric_limits<U>::epsilon())
-            throw std::invalid_argument("Division by zero");
-
-        return vector3D(x/a, y/a, z/a);
-    }
-    // v*w  (dot product)
-    template <typename U>
-    inline auto operator*(const vector3D<U>& V) const {
-        return x * V.x + y * V.y + z * V.z;
-    }
-    // v.dot(w) (dot product)
-    template<typename U>
-    inline auto dot(const vector3D<U>& V) const {
-        return x*V.x + y*V.y + z*V.z;
-    } 
-    // dot(v,w)  (dot product)
-    template <typename U>
-    friend inline auto dot(const vector3D<T>& V1, const vector3D<U>& V2){
-        return V1.x*V2.x + V1.y*V2.y + V1.z*V2.z;
-    }
-    // v^w  (Cross product)
-    template<typename U>
-    inline auto operator^(const vector3D<U>& V) const {
-        return vector3D(y * V.z - z * V.y, z * V.x - x * V.z, x * V.y - y * V.x);
-    }
-    // v.cross(w) (Cross product)
-    template <typename U>
-    inline auto cross(const vector3D<U>& V) const {
-        return vector3D(y * V.z - z * V.y, z * V.x - x * V.z, x * V.y - y * V.x);
-    }
-    // cross(v,w)  (Cross product)
-    template <typename U>
-    friend inline auto cross(const vector3D<T>& V1, const vector3D<U>& V2){
-        return vector3D(V1.y*V2.z - V1.z*V2.y, V1.z*V2.x - V1.x*V2.z, V1.x*V2.y - V1.y*V2.x);
-    }
-    // v.norm2()  (Norm Operation)
-    inline auto norm2(void) const {return x*x + y*y + z*z;}
-    // norm2(v) (Norm Operators)
-    friend inline auto norm2(const vector3D<T>& V){
-        return V.x*V.x + V.y*V.y + V.z*V.z;
-    }
-    // v.norm() (Norm Operation)
-    inline auto norm(void) const {return std::sqrt(x*x + y*y + z*z);} 
-    // norm(v) (Norm Operators)
-    friend inline auto norm(const vector3D<T>& V){
-        return std::sqrt(V.x*V.x + V.y*V.y + V.z*V.z);
-    }
-    // v.angle(w) more precise than acos(dot(v,w) / (norm2(v))) 
-    template<typename U>
-    inline auto angle(const vector3D<U>& V) const { //angle method
-        if (this->norm2() == 0 || V.norm2() == 0)
-            throw std::invalid_argument("zero-vector error");
-        return std::atan2((*this^V).norm(), (*this)*V);
-    }
-    // angle(v,w)   (angle between two vectors)
-    template <typename U>
-    friend inline auto angle(const vector3D<T>& V1, const vector3D<U>& V2){
-        if (V1.norm2() == 0 || V2.norm2() == 0) {
-            throw std::invalid_argument("zero-vector error");
-        }
-        return std::atan2((V1^V2).norm(), V1*V2);
-    }
-    // v.unit()  (convert to unitary vector)
-    inline vector3D<T>& unit(void){
-        const auto N = norm2();
-        const auto invN = (N != 0.0) ? 1.0 / std::sqrt(N) : 0.0;
-        x *= invN; y *= invN; z *= invN;
-        return *this;
-    }
-    // unit(v)   (unitary operator)
-    friend inline vector3D<T> unit(const vector3D<T>& V){
-        const auto N = V.norm2();
-        const auto invN = (N != 0.0) ? 1.0 / std::sqrt(N) : 0.0;
-        return vector3D<T>(V.x * invN, V.y * invN, V.z * invN);
+    static inline constexpr const std::size_t size() {
+        return N;
     }
 };
+// std::cout << operator
+template <typename E, std::size_t N>
+std::ostream& operator<<(std::ostream& os, const __VecExpression<E, N>& vec) {
+    os << "(";
+    for (std::size_t i = 0; i < N; ++i) {
+        os << vec[i];
+        if (i < N - 1) {
+            os << ", ";
+        }
+    }
+    os << ")";
+    return os;
+}
+/*
+*  Utility functions
+*/
+// Sumation of all elements
+template <typename E1, std::size_t N>
+inline constexpr auto sum(const __VecExpression<E1, N> &expr) noexcept;
+// Specialization for N = 3
+template <typename E1>
+inline constexpr auto sum(const __VecExpression<E1, 3> &expr) noexcept {
+    return expr[0] + expr[1] + expr[2];
+}
+// Specialization for N = 2
+template <typename E1>
+inline constexpr auto sum(const __VecExpression<E1, 2> &expr) noexcept {
+    return expr[0] + expr[1];
+}
+// Element-wise product
+template <typename E1, typename E2, std::size_t N>
+class __VecElementWiseProduct : public __VecExpression<__VecElementWiseProduct<E1, E2, N>, N> {
+    const E1& _u;
+    const E2& _v;
+public:
+    constexpr __VecElementWiseProduct(const E1 &u, const E2 &v) noexcept : _u(u), _v(v) {};
+    inline constexpr const auto operator[](const std::size_t i) const {
+        return _u[i] * _v[i];
+    }
+    static inline constexpr const std::size_t size() {
+        return N;
+    }
+};
+template <typename E1, typename E2, std::size_t N>
+inline constexpr __VecElementWiseProduct<E1, E2, N> ElemProd(__VecExpression<E1, N> const& u, __VecExpression<E2, N> const& v) noexcept {
+    return __VecElementWiseProduct<E1, E2, N>(*static_cast<const E1*>(&u), *static_cast<const E2*>(&v));
+}
+// Dot Product
+template <typename E1, typename E2, std::size_t N>
+inline constexpr auto dot(const __VecExpression<E1, N> &u, const __VecExpression<E2, N> &v) noexcept {
+    return sum(ElemProd(u, v));
+}
+// Cross Product
+template <typename E1, typename E2>
+class __VecCrossProduct : public __VecExpression<__VecCrossProduct<E1, E2>, 3> {
+    const E1& _u;
+    const E2& _v;
+public:
+    constexpr __VecCrossProduct(const E1 &u, const E2 &v) noexcept : _u(u), _v(v) {};
+    inline constexpr const auto operator[](const std::size_t i) const {
+        if (i == 0) return _u[1] * _v[2] - _u[2] * _v[1];
+        if (i == 1) return _u[2] * _v[0] - _u[0] * _v[2];
+        if (i == 2) return _u[0] * _v[1] - _u[1] * _v[0];
+        return 0 * _u[0];
+    }
+    static inline constexpr const std::size_t size() {
+        return 3;
+    }
+};
+template <typename E1, typename E2>
+inline constexpr __VecCrossProduct<E1, E2> cross(const __VecExpression<E1, 3> & u, const __VecExpression<E2, 3> &v) noexcept {
+    return __VecCrossProduct<E1, E2>(*static_cast<const E1*>(&u), *static_cast<const E2*>(&v));
+}
+template <typename E1, typename E2>
+inline constexpr auto cross(const __VecExpression<E1, 2> & u, const __VecExpression<E2, 2> &v) noexcept {
+    return u[0] * v[1] - u[1] * v[0];
+}
 
+// Square Norm
+template <typename E1, std::size_t N>
+inline constexpr auto norm2(const __VecExpression<E1, N> &expr) noexcept {
+    return dot(expr, expr);
+}
+// Norm
+template <typename E1, std::size_t N>
+inline constexpr auto norm(const __VecExpression<E1, N> &expr) noexcept {
+    return std::sqrt(norm2(expr));
+}
+// Angle between 2 vectors
+template <typename E1, typename E2, std::size_t N>
+inline constexpr auto angle(const __VecExpression<E1, N> &u, const __VecExpression<E2, N> &v) noexcept {
+    return std::acos(dot(u, v) / (norm(u) * norm(v)));
+}
 template <typename T>
-class vector2D{
+inline constexpr T __radians_to_degrees(T degrees) {
+    return degrees * static_cast<T>(180.0) * static_cast<T>(M_1_PI);
+}
+template <typename E1, typename E2, std::size_t N>
+inline constexpr auto angled(const __VecExpression<E1, N> &u, const __VecExpression<E2, N> &v) noexcept {
+    return __radians_to_degrees(std::acos(dot(u, v) / (norm(u) * norm(v))));
+}
+/*
+*  OPERATORS
+*/
+// Sum
+template <typename E1, typename E2, std::size_t N>
+class __VecSum : public __VecExpression<__VecSum<E1, E2, N>, N> {
+    const E1& _u;
+    const E2& _v;
+public:
+    constexpr __VecSum(const E1 &u, const E2 &v) noexcept : _u(u), _v(v) {};
+    inline constexpr const auto operator[](const std::size_t i) const {
+        return _u[i] + _v[i];
+    }
+    static inline constexpr const std::size_t size() {
+        return N;
+    }
+};
+template <typename E1, typename E2, std::size_t N>
+inline constexpr __VecSum<E1, E2, N> operator+(const __VecExpression<E1, N> & u, const __VecExpression<E2, N> &v) noexcept {
+    return __VecSum<E1, E2, N>(*static_cast<const E1*>(&u), *static_cast<const E2*>(&v));
+}
+// +v operator
+// Left Sum
+template <typename E1, std::size_t N>
+class __LeftVecSum : public __VecExpression<__LeftVecSum<E1, N>, N> {
+    const E1& _u;
+public:
+    constexpr __LeftVecSum(const E1 &u) noexcept : _u(u) {};
+    inline constexpr const auto operator[](const std::size_t i) const {
+        return _u[i];
+    }
+    static inline constexpr const std::size_t size() {
+        return N;
+    }
+};
+template <typename E1, std::size_t N>
+inline constexpr __LeftVecSum<E1, N> operator+(const __VecExpression<E1, N> & u) noexcept {
+    return __LeftVecSum<E1, N>(*static_cast<const E1*>(&u));
+}
+// Subtraction
+template <typename E1, typename E2, std::size_t N>
+class __VecSubtraction : public __VecExpression<__VecSubtraction<E1, E2, N>, N> {
+    const E1& _u;
+    const E2& _v;
+public:
+    constexpr __VecSubtraction(const E1 &u, const E2 &v) noexcept : _u(u), _v(v) {};
+    inline constexpr const auto operator[](const std::size_t i) const {
+        return _u[i] - _v[i];
+    }
+    static inline constexpr const std::size_t size() {
+        return N;
+    }
+};
+template <typename E1, typename E2, std::size_t N>
+inline constexpr __VecSubtraction<E1, E2, N> operator-(__VecExpression<E1, N> const& u, __VecExpression<E2, N> const& v) noexcept {
+    return __VecSubtraction<E1, E2, N>(*static_cast<const E1*>(&u), *static_cast<const E2*>(&v));
+}
+// -v operator
+// Left Subtraction
+template <typename E1, std::size_t N>
+class __LeftVecSubtraction : public __VecExpression<__LeftVecSubtraction<E1, N>, N> {
+    const E1& _u;
+public:
+    constexpr __LeftVecSubtraction(const E1 &u) noexcept : _u(u) {};
+    inline constexpr const auto operator[](const std::size_t i) const {
+        return -_u[i];
+    }
+    static inline constexpr const std::size_t size() {
+        return N;
+    }
+};
+template <typename E1, std::size_t N>
+inline constexpr __LeftVecSubtraction<E1, N> operator-(const __VecExpression<E1, N> & u) noexcept {
+    return __LeftVecSubtraction<E1, N>(*static_cast<const E1*>(&u));
+}
+// Dot product
+template <typename E1, typename E2, std::size_t N>
+inline constexpr auto operator*(const __VecExpression<E1, N> &u, const __VecExpression<E2, N> &v) noexcept {
+    return dot(u, v);
+}
+// Cross product
+template <typename E1, typename E2, std::size_t N>
+inline constexpr auto operator^(const __VecExpression<E1, N> &u, const __VecExpression<E2, N> &v) noexcept {
+    return cross(u, v);
+}
+// Scalar multiplication
+template <typename E1, __Number E2, std::size_t N>
+class __LeftVecScalarProduct : public __VecExpression<__LeftVecScalarProduct<E1, E2, N>, N> {
+    const E1& _u;
+    const E2& _v;
+public:
+    constexpr __LeftVecScalarProduct(const E1 &u, const E2 &v) noexcept : _u(u), _v(v) {};
+    inline constexpr const auto operator[](const std::size_t i) const {
+        return _u[i] * _v;
+    }
+    static inline constexpr const std::size_t size() {
+        return N;
+    }
+};
+template <typename E1, __Number E2, std::size_t N>
+inline constexpr __LeftVecScalarProduct<E1, E2, N> operator*(const E2 &v, const __VecExpression<E1, N> &u) noexcept {
+    return __LeftVecScalarProduct<E1, E2, N>(*static_cast<const E1*>(&u), *static_cast<const E2*>(&v));
+}
+template <typename E1, __Number E2, std::size_t N>
+class __RightVecScalarProduct : public __VecExpression<__RightVecScalarProduct<E1, E2, N>, N> {
+    const E1& _u;
+    const E2& _v;
+public:
+    constexpr __RightVecScalarProduct(const E1 &u, const E2 &v) noexcept : _u(u), _v(v) {};
+    inline constexpr const auto operator[](const std::size_t i) const {
+        return _u[i] * _v;
+    }
+    static inline constexpr const std::size_t size() {
+        return N;
+    }
+};
+template <typename E1, __Number E2, std::size_t N>
+inline constexpr __RightVecScalarProduct<E1, E2, N> operator*(const __VecExpression<E1, N> &u, const E2 &v) noexcept {
+    return __RightVecScalarProduct<E1, E2, N>(*static_cast<const E1*>(&u), *static_cast<const E2*>(&v));
+}
+// Element-wise division
+template <typename E1, typename E2, std::size_t N>
+class __VecElementWiseDivision : public __VecExpression<__VecElementWiseDivision<E1, E2, N>, N> {
+    const E1& _u;
+    const E2& _v;
+public:
+    constexpr __VecElementWiseDivision(const E1 &u, const E2 &v) noexcept : _u(u), _v(v) {};
+    inline constexpr const auto operator[](const std::size_t i) const {
+        return _u[i] / _v[i];
+    }
+    static inline constexpr const std::size_t size() {
+        return N;
+    }
+};
+template <typename E1, typename E2, std::size_t N>
+inline constexpr __VecElementWiseDivision<E1, E2, N> operator/(__VecExpression<E1, N> const& u, __VecExpression<E2, N> const& v) noexcept {
+    return __VecElementWiseDivision<E1, E2, N>(*static_cast<const E1*>(&u), *static_cast<const E2*>(&v));
+}
+// Scalar Division
+template <typename E1, __Number E2, std::size_t N>
+class __VecScalarDivision : public __VecExpression<__VecScalarDivision<E1, E2, N>, N> {
+    const E1& _u;
+    const E2& _v;
+public:
+    constexpr __VecScalarDivision(const E1 &u, const E2 &v) noexcept : _u(u), _v(v) {};
+    inline constexpr const auto operator[](const std::size_t i) const {
+        return _u[i] / _v;
+    }
+    static inline constexpr const std::size_t size() {
+        return N;
+    }
+};
+template <typename E1, __Number E2, std::size_t N>
+inline constexpr __VecScalarDivision<E1, E2, N> operator/(const __VecExpression<E1, N> &u, const E2 &v) noexcept {
+    return __VecScalarDivision<E1, E2, N>(*static_cast<const E1*>(&u), *static_cast<const E2*>(&v));
+}
+// Normalization
+template <typename E1, typename E2, std::size_t N>
+class __VecNormalization : public __VecExpression<__VecNormalization<E1, E2, N>, N> {
+    const E1& _u;
+    const E2 Norm;
+public:
+    constexpr __VecNormalization(const E1 &u) noexcept : _u(u), Norm(norm(u)) {};
+    inline constexpr const auto operator[](const std::size_t i) const {
+        return _u[i] / Norm;
+    }
+    static inline constexpr const std::size_t size() {
+        return N;
+    }
+};
+template <typename E1, std::size_t N>
+inline constexpr auto unit(const __VecExpression<E1, N> &u) noexcept {
+    return __VecNormalization<E1, decltype(norm(u)), N>(*static_cast<const E1*>(&u));
+}
+/*
+*  Vector Classes
+*/
+template <__Number T>
+class vector3D : public __VecExpression<vector3D<T>, 3> {
+public:
+    T x, y, z;
+    static inline constexpr const std::size_t size() {
+        return 3;
+    }
+
+    constexpr vector3D() noexcept = default;
+    constexpr vector3D(const vector3D& other) noexcept = default;
+    constexpr vector3D(vector3D&& other) noexcept = default;
+    constexpr vector3D(const T value) noexcept : x(value), y(value), z(value) {};
+    constexpr vector3D(const T x_val, const T y_val, const T z_val) noexcept : x(x_val), y(y_val), z(z_val) {}
+    constexpr vector3D& operator=(const vector3D& other) noexcept = default;
+    constexpr vector3D& operator=(vector3D&& other) noexcept = default;
+    inline constexpr void load(const T x_val, const T y_val, const T z_val) noexcept {
+        x = x_val; y = y_val; z = z_val;
+    }
+
+    template <typename E>
+    inline constexpr vector3D(const __VecExpression<E, 3> &expr) noexcept {
+        x = expr[0]; y = expr[1]; z = expr[2];
+    }
+    inline constexpr const T& operator[](const std::size_t i) const {
+        switch (i) {
+        case 0: return x;
+        case 1: return y;
+        case 2: return z;
+        default: throw std::out_of_range("vector3D: Index out of range");
+        }
+    }
+    inline constexpr T& operator[](const std::size_t i) {
+        switch (i) {
+        case 0: return x;
+        case 1: return y;
+        case 2: return z;
+        default: throw std::out_of_range("vector3D: Index out of range");
+        }
+    }
+    /*
+    *  OPERATORS
+    */
+    template <typename E>
+    inline constexpr vector3D<T>& operator+=(const __VecExpression<E, 3>& expr) noexcept {
+        x += expr[0];
+        y += expr[1];
+        z += expr[2];
+        return *this;
+    }
+    template <typename E>
+    inline constexpr vector3D<T>& operator-=(const __VecExpression<E, 3>& expr) noexcept {
+        x -= expr[0];
+        y -= expr[1];
+        z -= expr[2];
+        return *this;
+    }
+    template <__Number E>
+    inline constexpr vector3D<T>& operator*=(const E& a) noexcept {
+        x *= a;
+        y *= a;
+        z *= a;
+        return *this;
+    }
+    template <__Number E>
+    inline constexpr vector3D<T>& operator/=(const E& a) noexcept {
+        x /= a;
+        y /= a;
+        z /= a;
+        return *this;
+    }
+    template <typename E>
+    inline constexpr vector3D<T>& operator/=(const __VecExpression<E, 3>& expr) noexcept {
+        x /= expr[0];
+        y /= expr[1];
+        z /= expr[2];
+        return *this;
+    }
+    template <typename E>
+    inline constexpr vector3D<T>& operator^=(const __VecExpression<E, 3>& expr) noexcept {
+        T xtemp = y * expr[2] - z * expr[1];
+        T ytemp = z * expr[0] - x * expr[2];
+        T ztemp = x * expr[1] - y * expr[0];
+        x =  xtemp;
+        y =  ytemp;
+        z =  ztemp;
+        return *this;
+    }
+    inline constexpr const T norm2() const noexcept {
+        return dot(*this, *this);
+    }
+    inline constexpr const T norm() const noexcept {
+        return std::sqrt(norm2());
+    }
+    inline constexpr const void unit() noexcept {
+        *this /= norm();
+    }
+};
+template <__Number T>
+class vector2D : public __VecExpression<vector2D<T>, 2> {
 public:
     T x, y;
+    static inline constexpr const std::size_t size() {
+        return 2;
+    }
 
-    // vector2D v; vector2D(), v=w; vector2D(w), vector2D(x,y,z)  (constructors)
-    vector2D() : x(0), y(0) {}
-    vector2D(const T& X, const T& Y) : x(X), y(Y) {}
-    vector2D(const vector2D& V) = default;
-    vector2D(vector2D&& V) noexcept = default;
-    vector2D& operator=(const vector2D& V) = default;
-    vector2D& operator=(vector2D&& V) noexcept = default;
+    constexpr vector2D() noexcept = default;
+    constexpr vector2D(const vector2D& other) noexcept = default;
+    constexpr vector2D(vector2D&& other) noexcept = default;
+    constexpr vector2D(const T value) noexcept : x(value), y(value) {};
+    constexpr vector2D(const T x_val, const T y_val) noexcept : x(x_val), y(y_val) {}
+    constexpr vector2D& operator=(const vector2D& other) noexcept = default;
+    constexpr vector2D& operator=(vector2D&& other) noexcept = default;
+    inline constexpr void load(const T x_val, const T y_val) noexcept {
+        x = x_val; y = y_val;
+    }
 
-    // destructor
-    ~vector2D() = default;
-
-    // v.load(x,y)   (set method)
-    inline void load(const T& X, const T& Y){x=X; y=Y;} //set method
-    // v[n]   (get method)
-    inline T& operator[](const int n){ //get method
-        switch (n) {
-            case 0: return x;
-            case 1: return y;
-            default: throw std::invalid_argument("Array index out of bounds");
+    template <typename E>
+    inline constexpr vector2D(const __VecExpression<E, 2> &expr) noexcept {
+        x = expr[0]; y = expr[1];
+    }
+    inline constexpr const T& operator[](const std::size_t i) const {
+        switch (i) {
+        case 0: return x;
+        case 1: return y;
+        default: throw std::out_of_range("vector2D: Index out of range");
         }
-    }  
-    // v.show()  (show vector)
-    inline void show(void){std::cout <<"("<<x<<","<<y<<")\n";}
-    // +v (addition) operator
-    inline vector2D<T> operator+() const {
-        return *this;
     }
-    // -v (subtraction) operator
-    inline vector2D<T> operator-() const {
-        return vector2D<T>(-x, -y);
-    }
-    // v1 += v2 operator  (vector addition)
-    template <typename U>
-    inline vector2D<T>& operator+=(const vector2D<U>& V) {
-          x = x + V.x;
-          y = y + V.y;
-          return *this;
-    }
-    // v1 -= v2 operator  (substraction equal)
-    template <typename U>
-    inline vector2D<T>& operator-=(const vector2D<U>& V) {
-          x = x - V.x;
-          y = y - V.y;
-          return *this;
-    }
-    // v*=a  (multiplication by scalar)
-    template <typename U>
-    inline vector2D<T>& operator*=(const U& a){
-        x = x * a;
-        y = y * a;
-        return *this;
-    }
-    // v/=a  (division by scalar)
-    template <typename U>
-    inline vector2D<T>& operator/=(const U& a){
-        if(std::abs(a) < std::numeric_limits<U>::epsilon())
-            throw std::invalid_argument("Division by zero");
-        x = x/a;
-        y = y/a;
-        return *this;
-    }
-    // v+w  (vector addition)
-    template <typename U>
-    inline auto operator+(const vector2D<U>& V) const {
-        return vector2D(x + V.x, y + V.y);
-    }
-    // v1-v2 operator  (substraction)
-    template <typename U>
-    inline auto operator-(const vector2D<U>& V) const {
-        return vector2D(x - V.x, y - V.y);
-    }
-    // v*a  (scalar product)
-    template <typename U>
-    inline auto operator*(const U& a) const {
-        return vector2D(x * a, y * a);
-    }
-    // a*v  (scalar product)
-    template <typename U>
-    friend inline vector2D<std::common_type_t<T, U>> operator*(const U& a, const vector2D<T>& vector) {
-        return vector * a;
-    }
-    // v/a (division by scalar)
-    template <typename U>
-    inline auto operator/(const U& a) const {
-        if (std::abs(a) <= std::numeric_limits<U>::epsilon())
-            throw std::invalid_argument("Division by zero");
-
-        return vector2D(x/a, y/a);
-    }
-    // v*w  (dot product)
-    template <typename U>
-    inline auto operator*(const vector2D<U>& V) const {
-        return x * V.x + y * V.y;
-    }
-    // v.dot(w) (dot product)
-    template<typename U>
-    inline auto dot(const vector2D<U>& V) const {
-        return x*V.x + y*V.y;
-    } 
-    // dot(v,w)  (dot product)
-    template <typename U>
-    friend inline auto dot(const vector2D<T>& V1, const vector2D<U>& V2){
-        return V1.x*V2.x + V1.y*V2.y;
-    }
-    // v^w  (Cross product)
-    template<typename U>
-    inline auto operator^(const vector2D<U>& V) const {
-        return x * V.y - y * V.x;
-    }
-    // v.cross(w) (Cross product)
-    template <typename U>
-    inline auto cross(const vector2D<U>& V) const {
-        return x * V.y - y * V.x;
-    }
-    // cross(v,w)  (Cross product)
-    template <typename U>
-    friend inline auto cross(const vector2D<T>& V1, const vector2D<U>& V2){
-        return V1.x*V2.y - V1.y*V2.x;
-    }
-    // v.norm2()  (Norm Operation)
-    inline auto norm2(void) const {return x*x + y*y;}
-    // norm2(v) (Norm Operators)
-    friend inline auto norm2(const vector2D<T>& V){
-        return V.x*V.x + V.y*V.y;
-    }
-    // v.norm() (Norm Operation)
-    inline auto norm(void) const {return std::sqrt(x*x + y*y);} 
-    // norm(v) (Norm Operators)
-    friend inline auto norm(const vector2D<T>& V){
-        return std::sqrt(V.x*V.x + V.y*V.y);
-    }
-    // v.angle(w) more precise than acos(dot(v,w) / (norm2(v))) 
-    template<typename U>
-    inline auto angle(const vector2D<U>& V) const { //angle method
-        if (this->norm2() == 0 || V.norm2() == 0)
-            throw std::invalid_argument("zero-vector error");
-        return std::atan2((*this^V), (*this)*V);
-    }
-    // angle(v,w)   (angle between two vectors)
-    template <typename U>
-    friend inline auto angle(const vector2D<T>& V1, const vector2D<U>& V2){
-        if (V1.norm2() == 0 || V2.norm2() == 0) {
-            throw std::invalid_argument("zero-vector error");
+    inline constexpr T& operator[](const std::size_t i) {
+        switch (i) {
+        case 0: return x;
+        case 1: return y;
+        default: throw std::out_of_range("vector2D: Index out of range");
         }
-        return std::atan2((V1^V2), V1*V2);
     }
-    // v.unit()  (convert to unitary vector)
-    inline vector2D<T>& unit(void){
-        const auto N = norm2();
-        const auto invN = (N != 0.0) ? 1.0 / std::sqrt(N) : 0.0;
-        x *= invN; y *= invN;
+    /*
+    *  OPERATORS
+    */
+    template <typename E>
+    inline constexpr vector2D<T>& operator+=(const __VecExpression<E, 2>& expr) noexcept {
+        x += expr[0];
+        y += expr[1];
         return *this;
     }
-    // unit(v)   (unitary operator)
-    friend inline vector2D<T> unit(const vector2D<T>& V){
-        const auto N = V.norm2();
-        const auto invN = (N != 0.0) ? 1.0 / std::sqrt(N) : 0.0;
-        return vector2D<T>(V.x * invN, V.y * invN);
+    template <typename E>
+    inline constexpr vector2D<T>& operator-=(const __VecExpression<E, 2>& expr) noexcept {
+        x -= expr[0];
+        y -= expr[1];
+        return *this;
+    }
+    template <__Number E>
+    inline constexpr vector2D<T>& operator*=(const E& a) noexcept {
+        x *= a;
+        y *= a;
+        return *this;
+    }
+    template <__Number E>
+    inline constexpr vector2D<T>& operator/=(const E& a) noexcept {
+        x /= a;
+        y /= a;
+        return *this;
+    }
+    template <typename E>
+    inline constexpr vector2D<T>& operator/=(const __VecExpression<E, 2>& expr) noexcept {
+        x /= expr[0];
+        y /= expr[1];
+        return *this;
+    }
+    inline constexpr const T norm2() const noexcept {
+        return dot(*this, *this);
+    }
+    inline constexpr const T norm() const noexcept {
+        return std::sqrt(norm2());
+    }
+    inline constexpr const void unit() noexcept {
+        *this /= norm();
     }
 };
