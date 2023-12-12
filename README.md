@@ -78,6 +78,12 @@ w.load(1,2,3,4,5,6);         // gets checked at compile time for the size of the
 
 Print the vector to the screen with `std::cout`. You can also calculate the norm of the vector with `v.norm()` and `norm(v)` or the square norm with `v.norm2()` and `norm2(v)`. Calculate the angle between two vectors (in radians) with the functions `angle(v1,v2)` and in degrees with `angled(v1,v2)`.
 
+As this library uses expression templates, doing
+```
+auto expr = vec1 + vec2;
+```
+will create an expression and not a vector. Therefore, the expression won't be evaluated until it is cast back to a vector. Still, you can treat it as a lazy evaluated vector. 
+
 # Operators
 
 TThe usual operations between vectors such as `=`, `+`, `-`, `*`, `/`, `+=`, `-=`, `/=` are supported.
