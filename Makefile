@@ -13,34 +13,17 @@ test_3D.x: Tests/Test_3D.cpp
 	@echo Vector3D tests:
 	@g++ $^ -std=c++20 -o $@ -lgtest -pthread
 	@./$@
-	@rm $@
 
 test_2D.x: Tests/Test_2D.cpp
 	@echo Vector2D tests:
 	@g++ $^ -std=c++20 -o $@ -lgtest -pthread
 	@./$@
-	@rm $@
-
+	
 benchmark: benchmark.x
 
-benchmark.x: Benchmarks/benchmarks_3D.cpp
-	@g++ -O3 -std=c++20 $^ -o $@
+benchmark.x: Benchmarks/benchmark.cpp
+	@g++ -std=c++20 -march=native -ftree-vectorize -O2 $^ -o $@
 	@./$@
-	@rm $@
-
-benchmark2D: benchmark2D.x
-
-benchmark2D.x: Benchmarks/benchmarks_2D.cpp
-	@g++ -O3 -std=c++20 $^ -o $@
-	@./$@
-	@rm $@
-
-benchmarkOld: benchmarkOld.x
-
-benchmarkOld.x: Benchmarks/benchmarks_3Dold.cpp
-	@g++ -O3 -std=c++20 $^ -o $@
-	@./$@
-	@rm $@
 	
 clean:
 	@rm -f *.x *.o a.out 

@@ -342,20 +342,16 @@ public:
         x = expr[0]; y = expr[1]; z = expr[2];
     }
     inline constexpr const T& operator[](const std::size_t i) const {
-        switch (i) {
-        case 0: return x;
-        case 1: return y;
-        case 2: return z;
-        default: throw std::out_of_range("vector3D: Index out of range");
-        }
+        if(i == 0) return x;
+        else if(i == 1) return y;
+        else if(i == 2) return z;
+        else throw std::out_of_range("vector3D: Index out of range");
     }
     inline constexpr T& operator[](const std::size_t i) {
-        switch (i) {
-        case 0: return x;
-        case 1: return y;
-        case 2: return z;
-        default: throw std::out_of_range("vector3D: Index out of range");
-        }
+        if(i == 0) return x;
+        else if(i == 1) return y;
+        else if(i == 2) return z;
+        else throw std::out_of_range("vector3D: Index out of range");
     }
     /*
     *  OPERATORS
@@ -411,8 +407,9 @@ public:
     inline constexpr const T norm() const noexcept {
         return std::sqrt(norm2());
     }
-    inline constexpr const void unit() noexcept {
+    inline constexpr const vector3D<T>& unit() noexcept {
         *this /= norm();
+        return *this;
     }
 };
 template <__Number T>
@@ -491,7 +488,8 @@ public:
     inline constexpr const T norm() const noexcept {
         return std::sqrt(norm2());
     }
-    inline constexpr const void unit() noexcept {
+    inline constexpr const vector2D<T>& unit() noexcept {
         *this /= norm();
+        return *this;
     }
 };
